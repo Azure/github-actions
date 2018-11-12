@@ -22,7 +22,13 @@ if [ -n "$DOCKER_REGISTRY_URL" ] && [ -n "$DOCKER_USERNAME" ] && [ -n "$DOCKER_P
   kubectl create secret docker-registry dockerPullSecret --docker-server=$DOCKER_REGISTRY_URL --docker-username=$DOCKER_USERNAME --docker-password=$DOCKER_PASSWORD
 fi
 
-echo "Creating a spec file for: $IMAGE_NAME"
-cat /deployment.yaml | awk '{sub(/__IMAGE_NAME__/,"'$IMAGE_NAME'")}1' > deployment.yaml
+helm init
 
-kubectl apply -f deployment.yaml
+if [ -n "$HELM_CHART_PATH" ]; then
+  helm upgrade --install --force $* aksdeploy $HELM_CHART_PATH   
+else
+  echo "Creating a helm chart"
+  helm create aksdeploy
+  HELM_CHART_PATH=./aksdeploy
+  helm upgrade --install --force --set image.repository=$IMAGE_NAME --set image.tag=latest --set service.type=LoadBalancer aksdeploy $HELM_CHART_PATH 
+fi
