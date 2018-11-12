@@ -25,10 +25,10 @@ fi
 helm init
 
 if [ -n "$HELM_CHART_PATH" ]; then
+  helm upgrade --install --force $* aksdeploy $HELM_CHART_PATH   
+else
   echo "Creating a helm chart"
   helm create aksdeploy
   HELM_CHART_PATH=./aksdeploy
   helm upgrade --install --force --set image.repository=$IMAGE_NAME --set image.tag=latest --set service.type=LoadBalancer aksdeploy $HELM_CHART_PATH 
-else
-  helm upgrade --install --force $* aksdeploy $HELM_CHART_PATH 
 fi
