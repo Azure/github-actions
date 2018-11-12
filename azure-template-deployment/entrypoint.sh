@@ -1,3 +1,7 @@
+#!/bin/sh
+
+set -e
+
 az group create --name "$RESOURCE_GROUP_NAME" --location "$RESOURCE_GROUP_LOCATION"
 
 if [ -n "$TEMPLATE_FILE_PATH" ]
