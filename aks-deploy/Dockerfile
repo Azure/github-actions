@@ -12,7 +12,11 @@ RUN apk update \
   && rm -rf /var/cache/apk/* \
   && curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl \
   && chmod +x ./kubectl \
-  && mv ./kubectl /usr/local/bin/kubectl
+  && mv ./kubectl /usr/local/bin/kubectl \
+  && curl https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz -o helm.tar.gz \
+  && tar --extract -f helm.tar.gz \
+  && chmod +x ./linux-amd64/helm \
+  && mv ./linux-amd64/helm /usr/local/bin/helm
 
 COPY --from=docker:stable /usr/local/bin/docker /usr/local/bin
 
