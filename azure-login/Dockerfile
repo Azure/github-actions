@@ -9,7 +9,7 @@ LABEL com.github.actions.icon="triange"
 LABEL com.github.actions.color="blue"
 
 RUN apk update \
-  && rm -rf /var/cache/apk/* \
+  && rm -rf /var/cache/apk/*
 
 COPY --from=docker:stable /usr/local/bin/docker /usr/local/bin
 
