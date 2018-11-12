@@ -24,7 +24,7 @@ fi
 
 helm init
 
-if [ -n "$HELM_CHART_PATH"]; then
+if [ -n "$HELM_CHART_PATH" ]; then
   echo "Creating a helm chart"
   helm create aksdeploy
   HELM_CHART_PATH=./aksdeploy
