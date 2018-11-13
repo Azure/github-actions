@@ -1,14 +1,32 @@
 #!/bin/sh
 
-set -e 
+set -e
 
-if [ -n "$AZURE_PIPELINE_ORGANIZATION" ] && [ -n "$AZURE_PIPELINE_PROJECT" ] && [ -n "$AZURE_PIPELINE_TOKEN" ] && [ -n "$AZURE_PIPELINE_NAME" ]; then
-    
-    AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
-    vsts configure --defaults instance=${AZDEVOPS_URL} project=${AZURE_PIPELINE_PROJECT}
-    
-    vsts login --token ${AZURE_PIPELINE_TOKEN}
-    
-    echo "Queueing Azure pipeline: ${AZURE_PIPELINE_NAME}"
-    vsts build queue --definition-name ${AZURE_PIPELINE_NAME}
+if [ -z "$AZURE_PIPELINE_ORGANIZATION" ]; then
+    echo "\$AZURE_PIPELINE_ORGANIZATION is not set."
+    exit 1
 fi
+
+if [ -z "$AZURE_PIPELINE_PROJECT" ]; then
+    echo "\$AZURE_PIPELINE_PROJECT is not set."
+    exit 1
+fi
+
+if [ -z "$AZURE_PIPELINE_TOKEN" ]; then
+    echo "\$AZURE_PIPELINE_TOKEN is not set."
+    exit 1
+fi
+
+if [ -z "$AZURE_PIPELINE_NAME" ]; then
+    echo "\$AZURE_PIPELINE_NAME is not set."
+    exit 1
+fi
+
+    
+AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
+vsts configure --defaults instance=${AZDEVOPS_URL} project=${AZURE_PIPELINE_PROJECT}
+    
+vsts login --token ${AZURE_PIPELINE_TOKEN}
+    
+echo "Queueing Azure pipeline: ${AZURE_PIPELINE_NAME}"
+vsts build queue --definition-name ${AZURE_PIPELINE_NAME}
