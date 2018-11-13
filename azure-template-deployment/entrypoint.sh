@@ -4,7 +4,7 @@ set -e
 
 az group create --name "$RESOURCE_GROUP_NAME" --location "$RESOURCE_GROUP_LOCATION"
 
-if [ -v "${TEMPLATE_FILE_PATH}" -a -n "${TEMPLATE_FILE_PATH}" ]
+if [ -v "${TEMPLATE_FILE_PATH}" -a ![-z "${TEMPLATE_FILE_PATH}"] ]
 then
   az group deployment create -g "${RESOURCE_GROUP_NAME}" --name "${DEPLOYMENT_NAME}" --template-file "${GITHUB_WORKSPACE}/${TEMPLATE_FILE_PATH}" --parameters "@${GITHUB_WORKSPACE}/${PARAMETERS_FILE_PATH}"
 else
