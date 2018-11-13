@@ -8,9 +8,4 @@ LABEL com.github.actions.description="GitHub Action to login in to Azure"
 LABEL com.github.actions.icon="triange"
 LABEL com.github.actions.color="blue"
 
-RUN apk update \
-  && rm -rf /var/cache/apk/*
-
-COPY --from=docker:stable /usr/local/bin/docker /usr/local/bin
-
 ENTRYPOINT az login --service-principal --username "$AZURE_SERVICE_APP_ID" --password "$AZURE_SERVICE_PASSWORD" --tenant "$AZURE_SERVICE_TENANT"

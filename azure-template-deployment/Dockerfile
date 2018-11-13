@@ -8,11 +8,6 @@ LABEL com.github.actions.description="GitHub Action to deploy ARM template to Az
 LABEL com.github.actions.icon="triange"
 LABEL com.github.actions.color="blue"
 
-RUN apk update \
-  && rm -rf /var/cache/apk/*
-
-COPY --from=docker:stable /usr/local/bin/docker /usr/local/bin
-
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
