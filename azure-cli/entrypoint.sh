@@ -1,14 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
-declare AZ_SCRIPT
-
 if [ -n "$SCRIPT_PATH" ]
 then
-  AZ_SCRIPT = "${GITHUB_WORKSPACE}/${SCRIPT_PATH}"
+  $SCRIPT_PATH
 else
-  AZ_SCRIPT = "$*"
+  bash "$*"
 fi
-
-sh -c "${AZ_SCRIPT}"
