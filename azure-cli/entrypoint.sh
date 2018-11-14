@@ -1,5 +1,5 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
-sh -c "az $*"
+az $*
