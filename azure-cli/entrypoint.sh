@@ -2,4 +2,4 @@
 
 set -e
 
-sh -c "az $*"
+sh -c "$*"
