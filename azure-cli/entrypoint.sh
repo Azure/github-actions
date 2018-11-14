@@ -4,7 +4,7 @@ set -e
 
 if [ -n "$SCRIPT_PATH" ]
 then
-  $SCRIPT_PATH
+  ${GITHUB_WORKSPACE}/$SCRIPT_PATH
 else
   bash "$*"
 fi
