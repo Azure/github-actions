@@ -7,7 +7,7 @@ LABEL com.github.actions.description="GitHub Action for deploying Web App on Win
 LABEL com.github.actions.icon="cloud-snow"
 LABEL com.github.actions.color="purple"
 
-RUN apk update && apk add nodejs=6.2.0-r0 && apk add zip
+RUN apk update && apk add nodejs && apk add zip
 
 COPY . .
 
