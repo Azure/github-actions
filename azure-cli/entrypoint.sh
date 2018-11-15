@@ -2,10 +2,17 @@
 
 set -e
 
-if [ -n "$SCRIPT_PATH" ]
+if [ -n "$AZURE_SCRIPT_PATH" ]
 then
-  chmod +x ${GITHUB_WORKSPACE}/${SCRIPT_PATH}
-  ${GITHUB_WORKSPACE}/${SCRIPT_PATH}
+  SCRIPT_FILE="${GITHUB_WORKSPACE}/${AZURE_SCRIPT_PATH}"
+  if [[ -e "$SCRIPT_FILE" ]]
+  then
+    chmod +x $SCRIPT_FILE
+    $SCRIPT_FILE
+  else
+    echo "Script file ${SCRIPT_FILE} does not exists."
+    exit 1
+  fi
 else
-  sh -c "$*"
+  $AZURE_SCRIPT
 fi
