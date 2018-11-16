@@ -47,7 +47,7 @@ if [[ -d $PACKAGE_PATH ]];
 then
     echo "Compressing Package '${PACKAGE_PATH}' to '$GITHUB_WORKSPACE/PACKAGE.zip'"
     cd $PACKAGE_PATH
-    zip -r "$GITHUB_WORKSPACE/PACKAGE.zip" * 
+    zip -r "$GITHUB_WORKSPACE/PACKAGE.zip" * > /dev/null
     PACKAGE_PATH="$GITHUB_WORKSPACE/PACKAGE.zip"
     cd "$GITHUB_WORKSPACE"
     echo "Compressed package. New Package path: '${PACKAGE_PATH}'"
@@ -57,14 +57,14 @@ echo "Retrieving publishing credentials for the app"
 PUBLISH_PROFILE=`az webapp deployment list-publishing-profiles -n ${WEB_APP_NAME} -g ${RESOURCE_GROUP_NAME}`
 
 
-DEPLOYUSER=`node -pe 'JSON.parse(process.argv[1])[0].userName' ${PUBLISH_PROFILE}`
-DEPLOYPASS=`node -pe 'JSON.parse(process.argv[1])[0].userPWD' ${PUBLISH_PROFILE}`
+DEPLOYUSER=`node -pe 'JSON.parse(process.argv[1])[0].userName' "${PUBLISH_PROFILE}"`
+DEPLOYPASS=`node -pe 'JSON.parse(process.argv[1])[0].userPWD' "${PUBLISH_PROFILE}"`
 
 echo "Initiating Zip Deploy"
 node /node_modules/typed-azure-client/runner/kuduService.js --action zipdeploy --scmUri "https://${WEB_APP_NAME}.scm.azurewebsites.net" --username $DEPLOYUSER --password $DEPLOYPASS --package "$PACKAGE_PATH"
 echo "Package Deployed to Azure Web App."
 
-DESTINATION_URL=`node -pe 'JSON.parse(process.argv[1])[0].destinationAppUrl' ${PUBLISH_PROFILE}`
+DESTINATION_URL=`node -pe 'JSON.parse(process.argv[1])[0].destinationAppUrl' "${PUBLISH_PROFILE}"`
 echo "App Service Application URL: ${DESTINATION_URL}"
 
 
