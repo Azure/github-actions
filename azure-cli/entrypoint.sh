@@ -10,7 +10,7 @@ then
     chmod +x $SCRIPT_FILE
     $SCRIPT_FILE
   else
-    echo "Script file ${SCRIPT_FILE} does not exists."
+    echo "Script file ${SCRIPT_FILE} does not exists." >&2
     exit 1
   fi
 else

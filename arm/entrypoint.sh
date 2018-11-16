@@ -9,7 +9,7 @@ if [[ $RESOURCE_GROUP_EXISTS == "false" ]]
 then
   if [[ -z "$RESOURCE_GROUP_LOCATION" ]]
   then
-    echo "RESOURCE_GROUP_LOCATION is not set."
+    echo "RESOURCE_GROUP_LOCATION is not set." >&2
     exit 1
   else
     az group create --name "$AZURE_RESOURCE_GROUP" --location "$RESOURCE_GROUP_LOCATION"
@@ -29,7 +29,7 @@ else
   PARAMETERS_FILE="${GITHUB_WORKSPACE}/${AZURE_TEMPLATE_PARAM_FILE}"
   if [[ ! -e "$PARAMETERS_FILE" ]]
   then
-    echo "Parameters file ${PARAMETERS_FILE} does not exists."
+    echo "Parameters file ${PARAMETERS_FILE} does not exists." >&2
     exit 1
   else
     PARAMETERS="@${PARAMETERS_FILE}"
@@ -53,7 +53,7 @@ else
   TEMPLATE_FILE="${GITHUB_WORKSPACE}/${AZURE_TEMPLATE_LOCATION}"
   if [[ ! -e "$TEMPLATE_FILE" ]]
   then
-    echo "Template file ${TEMPLATE_FILE} does not exists."
+    echo "Template file ${TEMPLATE_FILE} does not exists." >&2
     exit 1
   else
     az group deployment create -g "$AZURE_RESOURCE_GROUP" --name "$DEPLOYMENT_NAME" --template-file "$TEMPLATE_FILE" --parameters "$PARAMETERS"

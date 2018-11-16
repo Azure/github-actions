@@ -6,7 +6,7 @@ if [[ -n "$AZURE_SERVICE_APP_ID" ]] && [[ -n "$AZURE_SERVICE_PASSWORD" ]] && [[ 
 then
   az login --service-principal --username "$AZURE_SERVICE_APP_ID" --password "$AZURE_SERVICE_PASSWORD" --tenant "$AZURE_SERVICE_TENANT"
 else
-  echo "One of the required parameters for Azure Login is not set: AZURE_SERVICE_APP_ID, AZURE_SERVICE_PASSWORD, AZURE_SERVICE_TENANT."
+  echo "One of the required parameters for Azure Login is not set: AZURE_SERVICE_APP_ID, AZURE_SERVICE_PASSWORD, AZURE_SERVICE_TENANT." >&2
   exit 1
 fi
 
@@ -17,7 +17,7 @@ else
   SUBSCRIPTIONS=$(az account list)
   if [[ ${#SUBSCRIPTIONS[@]} > 1 ]]
   then
-    echo "AZURE_SUBSCRIPTION is not set."
+    echo "AZURE_SUBSCRIPTION is not set." >&2
     exit 1
   fi
 fi
