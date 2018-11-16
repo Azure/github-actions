@@ -14,5 +14,5 @@ then
     exit 1
   fi
 else
-  $AZURE_SCRIPT
+  sh -c "$AZURE_SCRIPT"
 fi
