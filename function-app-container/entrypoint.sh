@@ -10,25 +10,28 @@ fi
 
 echo "Web App Name: ${WEB_APP_NAME}"
 
+if [[ -z $CONTAINER_IMAGE_NAME ]];
+then
+    echo "Required container image name. Provide Value in CONTAINER_IMAGE_NAME." >&2
+    exit 1
+fi
+
+RESOURCE_GROUP_NAME=`az resource list -n "${WEB_APP_NAME}" --resource-type "Microsoft.Web/Sites" --query '[0].resourceGroup' | xargs`
+
 if [[ -z $RESOURCE_GROUP_NAME ]];
-then 
-    RESOURCE_GROUP_NAME=`az resource list -n "${WEB_APP_NAME}" --resource-type "Microsoft.Web/Sites" --query '[0].resourceGroup' | xargs`
-    if [[ -z $RESOURCE_GROUP_NAME ]];
-    then
-        echo "Web App '${WEB_APP_NAME}' should exist before deployment." >&2
-        exit 1
-    fi
+then
+    echo "Web App '${WEB_APP_NAME}' should exist before deployment." >&2
+    exit 1
 fi
 
 echo "Resource Group Name: ${RESOURCE_GROUP_NAME}"
 
-if [[ -z $CONTAINER_IMAGE_NAME || -z $CONTAINER_IMAGE_TAG ]];
-then
-    echo "Required container image name and tag. Provide Value in CONTAINER_IMAGE_NAME and CONTAINER_IMAGE_TAG variables." >&2
-    exit 1
-fi
+AZCLI_ARGUMENT=" --docker-custom-image-name ${CONTAINER_IMAGE_NAME}"
 
-AZCLI_ARGUMENT=" --docker-custom-image-name ${CONTAINER_IMAGE_NAME}:${CONTAINER_IMAGE_TAG}"
+if [[ ! -z $CONTAINER_IMAGE_TAG ]];
+then
+    AZCLI_ARGUMENT="${AZCLI_ARGUMENT}:${CONTAINER_IMAGE_TAG}"
+fi
 
 if [[ ! -z $DOCKER_USERNAME && ! -z $DOCKER_PASSWORD ]];
 then
