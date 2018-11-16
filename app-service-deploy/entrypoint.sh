@@ -27,7 +27,7 @@ echo "Initiating Web App Deployment"
 if [[ ! $APP_KIND =~ $LINUX_APP_SUBSTRING ]];
 then
     WEBSITE_RUN_FROM_PACKAGE=`az webapp config appsettings list -n ${WEB_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITE_RUN_FROM_PACKAGE')].value" -o tsv`
-    if [[ $WEBSITE_RUN_FROM_PACKAGE == "1" ]];
+    if [[ $WEBSITE_RUN_FROM_PACKAGE =~ "1" ]];
     then
         echo "Setting App Setting WEBSITE_RUN_FROM_PACKAGE = 1 ..."
         az webapp config appsettings set -g "${RESOURCE_GROUP_NAME}" -n "${WEB_APP_NAME}" --settings WEBSITE_RUN_FROM_PACKAGE=1 
