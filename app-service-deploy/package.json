@@ -1,23 +1,6 @@
 {
-  "name": "azure-app-service-github-action",
-  "version": "1.0.0",
-  "description": "Kudu Typescript implementation",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/Microsoft/vsts-tasks.git"
-  },
-  "author": "Microsoft Corporation",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Microsoft/vsts-tasks/issues"
-  },
-  "homepage": "https://github.com/Microsoft/vsts-tasks#readme",
-  "dependencies": {
-    "q": "1.4.1",
-    "typed-rest-client": "0.12.0",
-    "@types/mocha": "2.2.48",
-    "@types/node": "6.0.68",
-    "@types/q": "1.0.7",
-    "minimist": "1.2.0"
-  }
+    "name": "azure-web-app-deploy-github-action",
+    "dependencies": {
+        "typed-azure-client": "1.0.3"
+    }
 }
