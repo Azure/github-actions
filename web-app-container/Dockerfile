@@ -2,10 +2,10 @@ FROM microsoft/azure-cli:2.0.47
 
 LABEL version="1.0.0"
 LABEL maintainer="Microsoft Corporation"
-LABEL com.github.actions.name="GitHub Action for Azure Web App Container deployment"
-LABEL com.github.actions.description="GitHub Action for Azure Web App container deployment - ACR, Docker and private registries"
-LABEL com.github.actions.icon="cloud-snow"
-LABEL com.github.actions.color="purple"
+LABEL com.github.actions.name="GitHub Action for Function App on Container"
+LABEL com.github.actions.description="GitHub Action for Function App container deployment - ACR, Docker and private registries"
+LABEL com.github.actions.icon="cloud"
+LABEL com.github.actions.color="blue"
 
 COPY . .
 
