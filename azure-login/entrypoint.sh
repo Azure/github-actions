@@ -10,15 +10,14 @@ else
   exit 1
 fi
 
-SUBSCRIPTIONS=$(az account list)
-
-if [[ ${#SUBSCRIPTIONS[@]} > 1 ]]
+if [[ -n "$AZURE_SUBSCRIPTION" ]]
 then
-  if [[ -z "$AZURE_SUBSCRIPTION" ]]
+  az account set --s "$AZURE_SUBSCRIPTION"
+else
+  SUBSCRIPTIONS=$(az account list)
+  if [[ ${#SUBSCRIPTIONS[@]} > 1 ]]
   then
     echo "AZURE_SUBSCRIPTION is not set."
     exit 1
-  else
-    az account set --s "$AZURE_SUBSCRIPTION"
   fi
 fi

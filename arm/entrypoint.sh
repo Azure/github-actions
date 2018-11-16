@@ -10,6 +10,7 @@ then
   if [[ -z "$RESOURCE_GROUP_LOCATION" ]]
   then
     echo "RESOURCE_GROUP_LOCATION is not set."
+    exit 1
   else
     az group create --name "$AZURE_RESOURCE_GROUP" --location "$RESOURCE_GROUP_LOCATION"
   fi
@@ -22,16 +23,16 @@ GUID=$(uuidgen | cut -d '-' -f 1)
 
 if [[ $AZURE_TEMPLATE_PARAM_FILE =~ $URI_REGEX ]]
 then
-  PARAMETERS_FILE="parameters-${GUID}.json"
-  TEMPLATE_PARAMETERS=$(curl $AZURE_TEMPLATE_PARAM_FILE)
-  echo ${TEMPLATE_PARAMETERS} >> $PARAMETERS_FILE
-  echo "Downloaded parameters into file ${PARAMETERS_FILE}"
+  PARAMETERS=$(curl $AZURE_TEMPLATE_PARAM_FILE)
+  echo "Downloaded parameters from ${AZURE_TEMPLATE_PARAM_FILE}"
 else
   PARAMETERS_FILE="${GITHUB_WORKSPACE}/${AZURE_TEMPLATE_PARAM_FILE}"
   if [[ ! -e "$PARAMETERS_FILE" ]]
   then
     echo "Parameters file ${PARAMETERS_FILE} does not exists."
     exit 1
+  else
+    PARAMETERS="@${PARAMETERS_FILE}"
   fi
 fi
 
@@ -47,13 +48,14 @@ fi
 
 if [[ $AZURE_TEMPLATE_LOCATION =~ $URI_REGEX ]]
 then
-  az group deployment create -g "$AZURE_RESOURCE_GROUP" --name "$DEPLOYMENT_NAME" --template-uri "$AZURE_TEMPLATE_LOCATION" --parameters "@$PARAMETERS_FILE"
+  az group deployment create -g "$AZURE_RESOURCE_GROUP" --name "$DEPLOYMENT_NAME" --template-uri "$AZURE_TEMPLATE_LOCATION" --parameters "$PARAMETERS"
 else
   TEMPLATE_FILE="${GITHUB_WORKSPACE}/${AZURE_TEMPLATE_LOCATION}"
   if [[ ! -e "$TEMPLATE_FILE" ]]
   then
     echo "Template file ${TEMPLATE_FILE} does not exists."
+    exit 1
   else
-    az group deployment create -g "$AZURE_RESOURCE_GROUP" --name "$DEPLOYMENT_NAME" --template-file "$TEMPLATE_FILE" --parameters "@$PARAMETERS_FILE"
+    az group deployment create -g "$AZURE_RESOURCE_GROUP" --name "$DEPLOYMENT_NAME" --template-file "$TEMPLATE_FILE" --parameters "$PARAMETERS"
   fi
 fi
