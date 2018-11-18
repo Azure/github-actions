@@ -1,0 +1,6 @@
+{
+    "name": "azure-web-app-deploy-github-action",
+    "dependencies": {
+        "typed-azure-client": "1.0.4"
+    }
+}
