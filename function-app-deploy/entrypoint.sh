@@ -34,6 +34,15 @@ then
         sleep 10 # TODO: find whether this app setting is updated in Kudu
         echo "Set WEBSITE_RUN_FROM_PACKAGE = 1 successfully!"
     fi
+else
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE=`az webapp config appsettings list -n ${WEB_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITE_RUN_FROM_PACKAGE')].value" -o tsv`
+    if [[ ! $WEBSITES_ENABLE_APP_SERVICE_STORAGE == "true" ]];
+    then
+        echo "Setting App Setting WEBSITES_ENABLE_APP_SERVICE_STORAGE = true ..."
+        az webapp config appsettings set -g "${RESOURCE_GROUP_NAME}" -n "${WEB_APP_NAME}" --settings WEBSITES_ENABLE_APP_SERVICE_STORAGE=true > /dev/null
+        sleep 10 # TODO: find whether this app setting is updated in Kudu
+        echo "Set WEBSITES_ENABLE_APP_SERVICE_STORAGE = true successfully!"
+    fi
 fi
 
 if [[ -z $PACKAGE_PATH ]];
