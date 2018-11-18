@@ -49,5 +49,20 @@ az webapp config container set -n "${WEB_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" 
 
 echo "Configured image details to Azure App Service"
 
+APP_KIND=`az resource show -n "${WEB_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" --resource-type "Microsoft.Web/Sites" --query 'kind'` 
+echo "Web App type : ${APP_KIND}"
+
+if [[ $APP_KIND =~ "linux" ]];
+then
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE=`az webapp config appsettings list -n ${WEB_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITES_ENABLE_APP_SERVICE_STORAGE')].value" -o tsv`
+    if [[ ! $WEBSITES_ENABLE_APP_SERVICE_STORAGE == "false" ]];
+    then
+        echo "Setting App Setting WEBSITES_ENABLE_APP_SERVICE_STORAGE = false ..."
+        az webapp config appsettings set -g "${RESOURCE_GROUP_NAME}" -n "${WEB_APP_NAME}" --settings WEBSITES_ENABLE_APP_SERVICE_STORAGE=false > /dev/null
+        sleep 10 # TODO: find whether this app setting is updated in Kudu
+        echo "Set WEBSITES_ENABLE_APP_SERVICE_STORAGE = false successfully!"
+    fi
+fi
+
 DESTINATION_URL=`az webapp deployment list-publishing-profiles -n ${WEB_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query '[0].destinationAppUrl' -o tsv`
 echo "App Service Application URL: ${DESTINATION_URL}"
