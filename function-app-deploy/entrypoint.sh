@@ -35,7 +35,7 @@ then
         echo "Set WEBSITE_RUN_FROM_PACKAGE = 1 successfully!"
     fi
 else
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE=`az webapp config appsettings list -n ${WEB_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITE_RUN_FROM_PACKAGE')].value" -o tsv`
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE=`az webapp config appsettings list -n ${WEB_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITES_ENABLE_APP_SERVICE_STORAGE')].value" -o tsv`
     if [[ ! $WEBSITES_ENABLE_APP_SERVICE_STORAGE == "true" ]];
     then
         echo "Setting App Setting WEBSITES_ENABLE_APP_SERVICE_STORAGE = true ..."
