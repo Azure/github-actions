@@ -61,10 +61,12 @@ DEPLOYUSER=`node -pe 'JSON.parse(process.argv[1])[0].userName' "${PUBLISH_PROFIL
 DEPLOYPASS=`node -pe 'JSON.parse(process.argv[1])[0].userPWD' "${PUBLISH_PROFILE}"`
 
 echo "Initiating Zip Deploy"
+
+export DEPLOYER='GITHUB'
+
 node /node_modules/typed-azure-client/runner/kuduService.js --action zipdeploy --scmUri "https://${WEB_APP_NAME}.scm.azurewebsites.net" --username $DEPLOYUSER --password $DEPLOYPASS --package "$PACKAGE_PATH"
+
 echo "Package Deployed to Azure Web App."
 
 DESTINATION_URL=`node -pe 'JSON.parse(process.argv[1])[0].destinationAppUrl' "${PUBLISH_PROFILE}"`
 echo "App Service Application URL: ${DESTINATION_URL}"
-
-
