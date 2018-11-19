@@ -4,11 +4,11 @@ set -e
 
 if [[ -z $AZURE_APP_NAME ]];
 then 
-    echo "Required Web App Name. Provide value in AZURE_APP_NAME variable" >&2
+    echo "Required Azure Function App name. Provide value in AZURE_APP_NAME variable" >&2
     exit 1
 fi
 
-echo "Web App Name: ${AZURE_APP_NAME}"
+echo "Azure Function App Name: ${AZURE_APP_NAME}"
 
 if [[ -z $AZURE_APP_PACKAGE_LOCATION ]];
 then
@@ -51,7 +51,7 @@ echo "Web App type : ${APP_KIND}"
 
 echo "Initiating Web App Deployment"
 
-if [[ ! $APP_KIND =~ "linux" ]];
+if [[ ! $APP_KIND =~ $LINUX_APP_SUBSTRING ]];
 then
     WEBSITE_RUN_FROM_PACKAGE=`az webapp config appsettings list -n ${AZURE_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITE_RUN_FROM_PACKAGE')].value" -o tsv`
     if [[ ! $WEBSITE_RUN_FROM_PACKAGE == "1" ]];
@@ -60,6 +60,15 @@ then
         az webapp config appsettings set -g "${RESOURCE_GROUP_NAME}" -n "${AZURE_APP_NAME}" --settings WEBSITE_RUN_FROM_PACKAGE=1 > /dev/null
         sleep 10 # TODO: find whether this app setting is updated in Kudu
         echo "Set WEBSITE_RUN_FROM_PACKAGE = 1 successfully!"
+    fi
+else
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE=`az webapp config appsettings list -n ${AZURE_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITES_ENABLE_APP_SERVICE_STORAGE')].value" -o tsv`
+    if [[ ! $WEBSITES_ENABLE_APP_SERVICE_STORAGE == "true" ]];
+    then
+        echo "Setting App Setting WEBSITES_ENABLE_APP_SERVICE_STORAGE = true ..."
+        az webapp config appsettings set -g "${RESOURCE_GROUP_NAME}" -n "${AZURE_APP_NAME}" --settings WEBSITES_ENABLE_APP_SERVICE_STORAGE=true > /dev/null
+        sleep 10 # TODO: find whether this app setting is updated in Kudu
+        echo "Set WEBSITES_ENABLE_APP_SERVICE_STORAGE = true successfully!"
     fi
 fi
 
@@ -79,4 +88,4 @@ node /node_modules/typed-azure-client/runner/kuduService.js --action zipdeploy -
 echo "Package Deployed to Azure Function App."
 
 DESTINATION_URL=`node -pe 'JSON.parse(process.argv[1])[0].destinationAppUrl' "${PUBLISH_PROFILE}"`
-echo "Web App Application URL: ${DESTINATION_URL}"
+echo "Azure Function App URL: ${DESTINATION_URL}"
