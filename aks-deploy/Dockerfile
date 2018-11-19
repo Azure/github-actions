@@ -21,7 +21,8 @@ RUN apk update \
 COPY --from=docker:stable /usr/local/bin/docker /usr/local/bin
 
 COPY entrypoint.sh /
-COPY deployment.yaml /
+COPY default-chart /default-chart/
+
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
