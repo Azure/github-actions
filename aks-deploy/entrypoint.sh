@@ -21,7 +21,7 @@ if [ -z "$RESOURCE_GROUP" ]; then
   else
     RESOURCE_GROUP=$(az resource list --name $AKS_CLUSTER_NAME --resource-type Microsoft.ContainerService/managedClusters --query "[0].resourceGroup" -o tsv)
     
-    if [ -n "$RESOURCE_GROUP" ]; then
+    if [ -z "$RESOURCE_GROUP" ]; then
       echo "Ensure the AKS cluster: '${AKS_CLUSTER_NAME}' exists."
       exit 1
     fi
