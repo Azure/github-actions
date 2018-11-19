@@ -13,10 +13,6 @@ if [ -n "$AZURE_SERVICE_PEM" ]; then
   export AZURE_SERVICE_PASSWORD="$HOME/.az/key.pem"
 fi
 
-if [ -n "$AZURE_SERVICE_APP_ID" ] && [ -n "$AZURE_SERVICE_PASSWORD" ] && [ -n "$AZURE_SERVICE_TENANT" ]; then
-  az login --service-principal --username "$AZURE_SERVICE_APP_ID" --password "$AZURE_SERVICE_PASSWORD" --tenant "$AZURE_SERVICE_TENANT"
-fi
-
 if [ -z "$RESOURCE_GROUP" ]; then
   AMBIGUOUS=$(az resource list --name $AKS_CLUSTER_NAME --resource-type Microsoft.ContainerService/managedClusters --query "[1].resourceGroup")
   if [ -n "$AMBIGUOUS" ]; then
@@ -28,7 +24,10 @@ if [ -z "$RESOURCE_GROUP" ]; then
   fi
 fi
 
-az aks get-credentials --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP
+if [ -z "$KUBECONFIG" ]; then
+  az aks get-credentials --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP
+  $INGRESS_ROUTING_ZONE=$(az aks show -n $AKS_CLUSTER_NAME -g $RESOURCE_GROUP --query "addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName")
+fi
 
 if [ -n "$DOCKER_REGISTRY_URL" ] && [ -n "$DOCKER_USERNAME" ] && [ -n "$DOCKER_PASSWORD" ]; then
   echo "Adding docker secrets"
@@ -43,6 +42,10 @@ helm init
 
 DEFAULT_ARGS=""
 
+if [ -z "$HELM_RELEASE_NAME" ]; then
+  HELM_RELEASE_NAME=aks-deploy
+fi
+
 if [ -z "$HELM_CHART_PATH" ]; then
   echo "Using a default helm chart"
 
@@ -56,6 +59,10 @@ if [ -z "$HELM_CHART_PATH" ]; then
     IMAGE_NAME=$IMAGE_NAME:$IMAGE_TAG
   fi
   DEFAULT_ARGS="--set image.repository=$IMAGE_NAME"
+
+  if [ -n "${INGRESS_ROUTING_ZONE}" ]; then
+    DEFAULT_ARGS="${DEFAULT_ARGS} --set ingress.enabled=true --set ingress.hostname=${}.${INGRESS_ROUTING_ZONE}"
+  fi
 fi
 
-helm upgrade --install --force $DEFAULT_ARGS $* aksdeploy $HELM_CHART_PATH
+helm upgrade --install --force $DEFAULT_ARGS $* $HELM_RELEASE_NAME $HELM_CHART_PATH
