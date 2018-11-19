@@ -20,13 +20,19 @@ if [ -z "$RESOURCE_GROUP" ]; then
     exit 1
   else
     RESOURCE_GROUP=$(az resource list --name $AKS_CLUSTER_NAME --resource-type Microsoft.ContainerService/managedClusters --query "[0].resourceGroup" -o tsv)
+    
+    if [ -n "$RESOURCE_GROUP" ]; then
+      echo "Ensure the AKS cluster: '${AKS_CLUSTER_NAME}' exists."
+      exit 1
+    fi
+    
     echo "Recognized RG name: $RESOURCE_GROUP"
   fi
 fi
 
 if [ -z "$KUBECONFIG" ]; then
   az aks get-credentials --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP
-  $INGRESS_ROUTING_ZONE=$(az aks show -n $AKS_CLUSTER_NAME -g $RESOURCE_GROUP --query "addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName")
+  INGRESS_ROUTING_ZONE=$(az aks show -n $AKS_CLUSTER_NAME -g $RESOURCE_GROUP --query "addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName")
 fi
 
 if [ -n "$DOCKER_REGISTRY_URL" ] && [ -n "$DOCKER_USERNAME" ] && [ -n "$DOCKER_PASSWORD" ]; then
