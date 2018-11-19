@@ -55,19 +55,21 @@ fi
 if [ -z "$HELM_CHART_PATH" ]; then
   echo "Using a default helm chart"
 
-  if [ -z "$IMAGE_NAME" ]; then
-      echo "\$IMAGE_NAME is not set."
+  if [ -z "$CONTAINER_IMAGE_NAME " ]; then
+      echo "\$CONTAINER_IMAGE_NAME  is not set."
       exit 1
   fi
 
   HELM_CHART_PATH=/default-chart
-  if [ -n "$IMAGE_TAG" ]; then
-    IMAGE_NAME=$IMAGE_NAME:$IMAGE_TAG
+  
+  if [ -n "$CONTAINER_IMAGE_TAG " ]; then
+    CONTAINER_IMAGE_NAME=$CONTAINER_IMAGE_NAME:$CONTAINER_IMAGE_TAG 
   fi
-  DEFAULT_ARGS="--set image.repository=$IMAGE_NAME"
+  
+  DEFAULT_ARGS="--set image.repository=$CONTAINER_IMAGE_NAME"
 
   if [ -n "${INGRESS_ROUTING_ZONE}" ]; then
-    DEFAULT_ARGS="--set image.repository=$IMAGE_NAME --set ingress.enabled=true --set ingress.hostname=${HELM_RELEASE_NAME}.${INGRESS_ROUTING_ZONE}"
+    DEFAULT_ARGS="--set image.repository=$CONTAINER_IMAGE_NAME --set ingress.enabled=true --set ingress.hostname=${HELM_RELEASE_NAME}.${INGRESS_ROUTING_ZONE}"
   fi
 fi
 
