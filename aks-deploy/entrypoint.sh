@@ -67,7 +67,7 @@ if [ -z "$HELM_CHART_PATH" ]; then
   DEFAULT_ARGS="--set image.repository=$IMAGE_NAME"
 
   if [ -n "${INGRESS_ROUTING_ZONE}" ]; then
-    DEFAULT_ARGS="--set image.repository=$IMAGE_NAME --set ingress.enabled=true --set ingress.hostname=${}.${INGRESS_ROUTING_ZONE}"
+    DEFAULT_ARGS="--set image.repository=$IMAGE_NAME --set ingress.enabled=true --set ingress.hostname=${HELM_RELEASE_NAME}.${INGRESS_ROUTING_ZONE}"
   fi
 fi
 
