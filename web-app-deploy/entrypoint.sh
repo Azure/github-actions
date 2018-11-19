@@ -2,6 +2,8 @@
 
 set -e
 
+LINUX_APP_SUBSTRING="linux"
+
 if [[ -z $AZURE_APP_NAME ]];
 then 
     echo "Required Web App Name. Provide value in AZURE_APP_NAME variable" >&2
@@ -51,7 +53,7 @@ echo "Web App type : ${APP_KIND}"
 
 echo "Initiating Web App Deployment"
 
-if [[ ! $APP_KIND =~ "linux" ]];
+if [[ ! $APP_KIND =~ $LINUX_APP_SUBSTRING ]];
 then
     WEBSITE_RUN_FROM_PACKAGE=`az webapp config appsettings list -n ${AZURE_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITE_RUN_FROM_PACKAGE')].value" -o tsv`
     if [[ ! $WEBSITE_RUN_FROM_PACKAGE == "1" ]];

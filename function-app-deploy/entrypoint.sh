@@ -2,6 +2,8 @@
 
 set -e
 
+LINUX_APP_SUBSTRING="linux"
+
 if [[ -z $AZURE_APP_NAME ]];
 then 
     echo "Required Azure Function App name. Provide value in AZURE_APP_NAME variable" >&2
@@ -26,7 +28,7 @@ RESOURCE_GROUP_NAME=`az resource list -n "${AZURE_APP_NAME}" --resource-type "Mi
 
 if [[ -z $RESOURCE_GROUP_NAME ]];
 then
-    echo "Web App '${AZURE_APP_NAME}' should exist before deployment." >&2
+    echo "Azure Function App '${AZURE_APP_NAME}' should exist before deployment." >&2
     exit 1
 fi
 
@@ -47,9 +49,7 @@ fi
 
 APP_KIND=`az resource show -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" --resource-type "Microsoft.Web/Sites" --query 'kind'` 
 
-echo "Web App type : ${APP_KIND}"
-
-echo "Initiating Web App Deployment"
+echo "Azure Function App type : ${APP_KIND}"
 
 if [[ ! $APP_KIND =~ $LINUX_APP_SUBSTRING ]];
 then
