@@ -2,6 +2,8 @@
 
 set -e
 
+AZURE_CR_SUFFIX="azurecr.io"
+
 if [[ -z $AZURE_APP_NAME ]];
 then 
     echo "Required Azure Function App Name. Provide value in AZURE_APP_NAME variable" >&2
@@ -22,6 +24,19 @@ if [[ -z $RESOURCE_GROUP_NAME ]];
 then
     echo "Azure Function App '${AZURE_APP_NAME}' should exist before deployment." >&2
     exit 1
+fi
+
+if [[ $DOCKER_REGISTRY_URL =~ "$AZURE_CR_SUFFIX" ]];
+then
+    # remove http:// and https:// before appending container name to image
+    DOCKER_REGISTRY_NAME=${DOCKER_REGISTRY_URL#"http://"}
+    DOCKER_REGISTRY_NAME=${DOCKER_REGISTRY_URL#"https://"}
+
+    if [[ ! CONTAINER_IMAGE_NAME =~ "$DOCKER_REGISTRY_NAME" ]];
+    then
+        # Append container name with image
+        CONTAINER_IMAGE_NAME="$DOCKER_REGISTRY_NAME/$CONTAINER_IMAGE_NAME"
+    fi
 fi
 
 echo "Resource Group Name: ${RESOURCE_GROUP_NAME}"
