@@ -9,6 +9,7 @@ then
 else
   if [[ -z "$AZURE_RG_COMMAND" ]] || [[ ${AZURE_RG_COMMAND,,} == 'create' ]]
   then
+    echo "Executing commands to Create/Update resource group."
     # Create Resource group if it does not exists
 
     RESOURCE_GROUP_EXISTS=$(az group exists -n "$AZURE_RESOURCE_GROUP")
@@ -68,6 +69,7 @@ else
     fi
   elif [[ ${AZURE_RG_COMMAND,,} == 'delete' ]]
   then
+    echo "Executing commands Delete resource group."
     az group delete -n "$AZURE_RESOURCE_GROUP" --no-wait --yes
   else
     echo "Invalid AZURE_RG_COMMAND. Allowed values are: CREATE, DELETE." >&2
