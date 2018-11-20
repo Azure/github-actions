@@ -26,6 +26,16 @@ fi
 
 echo "Resource Group Name: ${RESOURCE_GROUP_NAME}"
 
+
+WEBSITES_ENABLE_APP_SERVICE_STORAGE=`az webapp config appsettings list -n ${AZURE_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITES_ENABLE_APP_SERVICE_STORAGE')].value" -o tsv`
+
+if [[ ! $WEBSITES_ENABLE_APP_SERVICE_STORAGE == "false" ]];
+then
+    echo "Setting App Setting WEBSITES_ENABLE_APP_SERVICE_STORAGE = false ..."
+    az webapp config appsettings set -g "${RESOURCE_GROUP_NAME}" -n "${AZURE_APP_NAME}" --settings WEBSITES_ENABLE_APP_SERVICE_STORAGE=false > /dev/null
+    echo "Set WEBSITES_ENABLE_APP_SERVICE_STORAGE = false successfully!"
+fi
+
 AZCLI_ARGUMENT=" --docker-custom-image-name ${CONTAINER_IMAGE_NAME}"
 
 if [[ ! -z $CONTAINER_IMAGE_TAG ]];
