@@ -17,13 +17,10 @@ service:
 
 ingress:
   enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
   path: /
-  hosts:
-    - chart-example.local
-  tls: []
+  hostname: VALUE_TO_BE_OVERRIDDEN
 
 resources: {}
 
