@@ -1,11 +1,10 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "default-chart.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
 {{- $servicePort := .Values.service.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ .Release.Name }}
   labels:
     app.kubernetes.io/name: {{ include "default-chart.name" . }}
     helm.sh/chart: {{ include "default-chart.chart" . }}
@@ -32,6 +31,6 @@ spec:
         paths:
           - path: {{ $ingressPath }} 
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: {{ .Release.Name }}
               servicePort: {{ $servicePort }} 
 {{- end }}
