@@ -1,6 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "default-chart.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- $servicePort := .Values.service.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -26,13 +27,11 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ . | quote }}
+   - host: {{ .Values.ingress.hostname | quote }}
       http:
         paths:
-          - path: {{ $ingressPath }}
+          - path: {{ $ingressPath }} 
             backend:
               serviceName: {{ $fullName }}
-              servicePort: http
-  {{- end }}
+              servicePort: {{ $servicePort }} 
 {{- end }}
