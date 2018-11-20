@@ -27,7 +27,7 @@ if [ -z "$KUBECONFIG" ]; then
   fi
 
   az aks get-credentials --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP
-  INGRESS_ROUTING_ZONE=$(az aks show -n $AKS_CLUSTER_NAME -g $RESOURCE_GROUP --query "addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName")
+  INGRESS_ROUTING_ZONE=$(az aks show -n $AKS_CLUSTER_NAME -g $RESOURCE_GROUP --query "addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName" -o tsv)
 
 fi
 
