@@ -51,14 +51,14 @@ fi
 if [ -z "$HELM_CHART_PATH" ]; then
   echo "Using a default helm chart"
 
-  if [ -z "$CONTAINER_IMAGE_NAME " ]; then
+  if [ -z "$CONTAINER_IMAGE_NAME" ]; then
       echo "\$CONTAINER_IMAGE_NAME  is not set."
       exit 1
   fi
 
   HELM_CHART_PATH=/default-chart
   
-  if [ -n "$CONTAINER_IMAGE_TAG " ]; then
+  if [ -n "$CONTAINER_IMAGE_TAG" ]; then
     CONTAINER_IMAGE_NAME=$CONTAINER_IMAGE_NAME:$CONTAINER_IMAGE_TAG 
   fi
   
