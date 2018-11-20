@@ -8,7 +8,7 @@ then
     exit 1
 fi
 
-echo "Web App Name: ${AZURE_APP_NAME}"
+echo "Azure Function App Name: ${AZURE_APP_NAME}"
 
 if [[ -z $CONTAINER_IMAGE_NAME ]];
 then
