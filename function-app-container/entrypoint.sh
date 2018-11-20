@@ -30,7 +30,7 @@ if [[ $DOCKER_REGISTRY_URL =~ "$AZURE_CR_SUFFIX" ]];
 then
     # remove http:// and https:// before appending container name to image
     DOCKER_REGISTRY_NAME=${DOCKER_REGISTRY_URL#"http://"}
-    DOCKER_REGISTRY_NAME=${DOCKER_REGISTRY_URL#"https://"}
+    DOCKER_REGISTRY_NAME=${DOCKER_REGISTRY_NAME#"https://"}
 
     if [[ ! CONTAINER_IMAGE_NAME =~ "$DOCKER_REGISTRY_NAME" ]];
     then
