@@ -8,13 +8,7 @@ then
   exit 1
 fi
 
-if [[ -z "$AZURE_RG_COMMAND" ]]
-then
-  echo "AZURE_RG_COMMAND is not set." >&2
-  exit 1
-fi
-
-if [[ ${AZURE_RG_COMMAND,,} == 'create' ]]
+if [[ -z "$AZURE_RG_COMMAND" ]] || [[ ${AZURE_RG_COMMAND,,} == 'create' ]]
 then
   echo "Executing commands to Create/Update resource group."
   # Create Resource group if it does not exists
