@@ -2,8 +2,8 @@
 
 set -e
 
-if [ -n "$KUBECONFIG_CONTENTS" ]; then
-  echo "$KUBECONFIG_CONTENTS" > kubeconfig
+if [ -n "$KUBE_CONFIG_DATA" ]; then
+  echo "$KUBE_CONFIG_DATA" > kubeconfig
   export KUBECONFIG=./kubeconfig
 fi
 
