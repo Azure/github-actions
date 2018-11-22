@@ -2,6 +2,11 @@
 
 set -e
 
+if [ -n "$KUBECONFIG_CONTENTS" ]; then
+  echo "$KUBECONFIG_CONTENTS" > kubeconfig
+  export KUBECONFIG=./kubeconfig
+fi
+
 if [ -z "$KUBECONFIG" ]; then
 
   if [ -z "$AKS_CLUSTER_NAME" ]; then
