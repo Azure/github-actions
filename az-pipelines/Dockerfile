@@ -1,4 +1,7 @@
-FROM microsoft/vsts-cli:latest
+FROM nishubansal/localvstscli
+
+RUN apk update \
+  && apk add --no-cache jq
 
 LABEL version="1.0.0"
 
