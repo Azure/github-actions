@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e 
 
@@ -37,13 +37,13 @@ COUNT=$( echo ${PIPELINES} | jq length )
 
 if [ $COUNT -eq 0 ]; 
 then
-   echo "No build definition found with name: ${AZURE_PIPELINE_NAME}". >&2
+   echo "No pipeline found with name: ${AZURE_PIPELINE_NAME}". >&2
    exit 1;
 fi
 
 if [ $COUNT -gt 1 ]; 
 then
-    echo "Multple build definitions were found with name: ${AZURE_PIPELINE_NAME}. Pass unique build definition name and try again." >&2
+    echo "Multple pipelines were found with name: ${AZURE_PIPELINE_NAME}. Pass unique pipeline name and try again." >&2
     exit 1;
 fi
 
