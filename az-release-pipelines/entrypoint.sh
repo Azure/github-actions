@@ -7,13 +7,13 @@ then
     exit 1
 fi
 
-if [-z "$AZURE_PIPELINE_PROJECT" ];
+if [ -z "$AZURE_PIPELINE_PROJECT" ];
 then
     echo "\$AZURE_PIPELINE_PROJECT is not set."
     exit 1
 fi
 
-if [-z "$AZURE_PIPELINE_TOKEN" ]; 
+if [ -z "$AZURE_PIPELINE_TOKEN" ]; 
 then
     echo "\$AZURE_PIPELINE_TOKEN is not set."
     exit 1
@@ -31,40 +31,63 @@ vsts configure --defaults instance=${AZDEVOPS_URL} project=${AZURE_PIPELINE_PROJ
     
 vsts login --token ${AZURE_PIPELINE_TOKEN}
 
+# List RDs with given pipeline name
 PIPELINES=$( vsts release definition list --name ${AZURE_PIPELINE_NAME} )
-PIPELINE_COUNT=$( echo ${PIPELINES} | jq length )
 
-if [ $PIPELINE_COUNT -eq 0 ]
+echo ${PIPELINES} | jq -e . > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "Failed to fetch release definitions. Error: ${PIPELINES}"
+    exit 1;
+fi 
+
+COUNT=$( echo ${PIPELINES} | jq length )
+
+if [ $COUNT -eq 0 ]
 then
    echo "No release definition found with name: ${AZURE_PIPELINE_NAME}". >&2
    exit 1;
 fi
 
-COUNT=0
-echo ${PIPELINES} | jq .[]?.name -r | while read PIPELINE ; 
-do
-   if [ "$PIPELINE" =  "$AZURE_PIPELINE_NAME" ]; 
-   then
-       COUNT=`expr $COUNT + 1`
-	   if [ $COUNT -gt 1 ]; 
-       then
-           echo "Multple release definitions were found with name: ${AZURE_PIPELINE_NAME}. Pass unique release definition name and try again." >&2
-           exit 1;
-        fi
-   fi
-done
+# Filter RDs with exact name
+AZURE_PIPELINE_NAME=$(echo "$AZURE_PIPELINE_NAME" | awk '{print tolower($0)}')
+COUNT=$(echo ${PIPELINES} | jq -r ".[]?| .name |=ascii_downcase | select(.name==\"$AZURE_PIPELINE_NAME\")| .name //empty" | wc -l) 
+
+if [ $COUNT -gt 1 ]; 
+then
+    echo "Multple release definitions were found with name: ${AZURE_PIPELINE_NAME}. Pass unique release definition name and try again." >&2
+    exit 1;
+fi
+
+if [ $COUNT -eq 0 ]
+then
+   echo "No release definition found with name: ${AZURE_PIPELINE_NAME}". >&2
+   exit 1;
+fi
+
 
 RELEASE_DEFINITION=$( vsts release definition show --name ${AZURE_PIPELINE_NAME} )
-echo $RELEASE_DEFINITION
-TYPE="GitHub"
-ALIAS=$( echo ${RELEASE_DEFINITION} | jq -r ".artifacts[] | select((.type==\"$TYPE\") and .definitionReference.definition.name==\"$GITHUB_REPOSITORY\") | .alias" )
 
+echo ${RELEASE_DEFINITION} | jq -e . > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "Failed to fetch release pipeline. Error: ${RELEASE_DEFINITION}"
+    exit 1;
+fi 
+
+TYPE="GitHub"
+ARTIFACTS_COUNT=$( echo ${RELEASE_DEFINITION} | jq -r ".artifacts?[]? | select((.type==\"$TYPE\") and .definitionReference.definition.name==\"$GITHUB_REPOSITORY\") | length" | wc -l )
+
+if [ $ARTIFACTS_COUNT -gt 1 ];
+then
+    echo "More than 1 artifact found with same repository and repository type."
+    exit 1;
+fi
+
+ALIAS=$( echo ${RELEASE_DEFINITION} | jq -r ".artifacts[]? | select((.type==\"$TYPE\") and .definitionReference.definition.name==\"$GITHUB_REPOSITORY\") | .alias //empty" )
 if [ -n "$ALIAS" ]; 
 then
     echo "Triggering Azure release pipeline for : ${AZURE_PIPELINE_NAME} for commitId: ${GITHUB_SHA}."
     vsts release create --definition-name ${AZURE_PIPELINE_NAME} --artifact-metadata-list "$ALIAS"="$GITHUB_SHA"
-	exit 0
-fi
-    
-echo "Triggering Azure release pipeline: ${AZURE_PIPELINE_NAME}"
-vsts release create --definition-name ${AZURE_PIPELINE_NAME}
+else
+    echo "Triggering Azure release pipeline: ${AZURE_PIPELINE_NAME}"
+    vsts release create --definition-name ${AZURE_PIPELINE_NAME}
+fi  
