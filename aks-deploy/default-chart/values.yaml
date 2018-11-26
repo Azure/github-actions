@@ -15,6 +15,9 @@ service:
   type: LoadBalancer
   port: 80
 
+container:
+  port: 80
+
 ingress:
   enabled: false
   annotations:

@@ -2,9 +2,9 @@ FROM microsoft/azure-cli:2.0.47
 
 LABEL version="1.0.0"
 
-LABEL maintainer="Deepak Sattiraju"
-LABEL com.github.actions.name="GitHub Action for Deploying an image to an AKS cluster"
-LABEL com.github.actions.description="Downloads the kubeconfig of your AKS. And creates a service and a deployment with the image name provided, on the AKS cluster"
+LABEL maintainer="Microsoft Corporation"
+LABEL com.github.actions.name="Deploy a container image to an AKS cluster"
+LABEL com.github.actions.description="Creates a service and a deployment with the image name provided on a Kubernetes cluster using helm"
 LABEL com.github.actions.icon="triange"
 LABEL com.github.actions.color="blue"
 
