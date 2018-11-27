@@ -16,6 +16,6 @@ function-app-deploy/*   @vincentdass @kmkumaran
 
 function-app-container/*    @vincentdass @kmkumaran
 
-web-app-container/* @vincentdass @kmkumaran
+web-app-container/*     @vincentdass @kmkumaran
 
 web-app-deploy/*    @vincentdass @kmkumaran
