@@ -1,4 +1,4 @@
-FROM nishubansal/localvstscli
+FROM microsoft/vsts-cli
 
 RUN apk update \
   && apk add --no-cache jq
