@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+export AZURE_HTTP_USER_AGENT="GITHUBACTIONS_${GITHUB_ACTION}"
 
 AZURE_CR_SUFFIX="azurecr.io"
 
