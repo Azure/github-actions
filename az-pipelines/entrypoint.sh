@@ -28,11 +28,11 @@ fi
 
     
 AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
-vsts configure --defaults instance=${AZDEVOPS_URL} project=${AZURE_PIPELINE_PROJECT}
+vsts configure --defaults instance=${AZDEVOPS_URL} project="${AZURE_PIPELINE_PROJECT}"
     
 vsts login --token ${AZURE_PIPELINE_TOKEN}
     
-PIPELINES=$( vsts build definition list --name ${AZURE_PIPELINE_NAME} --output json )
+PIPELINES=$( vsts build definition list --name "${AZURE_PIPELINE_NAME}" --output json )
 
 echo ${PIPELINES} | jq -e . > /dev/null 2>&1
 if [ $? -ne 0 ]; then
@@ -44,13 +44,13 @@ COUNT=$( echo ${PIPELINES} | jq length )
 
 if [ $COUNT -eq 0 ]; 
 then
-   echo "No pipeline found with name: ${AZURE_PIPELINE_NAME}". >&2
+   echo "No pipeline found with name: '${AZURE_PIPELINE_NAME}'". >&2
    exit 1;
 fi
 
 if [ $COUNT -gt 1 ]; 
 then
-    echo "Multple pipelines were found with name: ${AZURE_PIPELINE_NAME}. Pass unique pipeline name and try again." >&2
+    echo "Multple pipelines were found with name: '${AZURE_PIPELINE_NAME}'. Pass unique pipeline name and try again." >&2
     exit 1;
 fi
 
@@ -68,9 +68,9 @@ REPOSITORY_TYPE=$( echo ${BUILD_DEFINITION} | jq  -r ".repository?.type?  //empt
 
 if [ -n "$REPOSITORY_NAME" ] && [ -n "$REPOSITORY_TYPE" ] && [ "$REPOSITORY_NAME" = "$GITHUB_REPOSITORY" ] && [ "$REPOSITORY_TYPE" = "GitHub" ]; 
 then
-    BUILD_OUTPUT=$( vsts build queue --definition-name ${AZURE_PIPELINE_NAME} --branch ${GITHUB_REF} --commit-id ${GITHUB_SHA} --output json )
+    BUILD_OUTPUT=$( vsts build queue --definition-name "${AZURE_PIPELINE_NAME}" --branch ${GITHUB_REF} --commit-id ${GITHUB_SHA} --output json )
 else
-    BUILD_OUTPUT=$( vsts build queue --definition-name ${AZURE_PIPELINE_NAME} --output json )
+    BUILD_OUTPUT=$( vsts build queue --definition-name "${AZURE_PIPELINE_NAME}" --output json )
 fi
 
 if [ -z "$BUILD_OUTPUT" ];
