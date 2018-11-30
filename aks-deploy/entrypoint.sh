@@ -45,7 +45,7 @@ if [ -n "$DOCKER_REGISTRY_URL" ] && [ -n "$DOCKER_USERNAME" ] && [ -n "$DOCKER_P
   fi
 fi
 
-helm init
+helm init --wait
 
 DEFAULT_ARGS=""
 
