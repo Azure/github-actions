@@ -5,7 +5,7 @@ RUN apk update \
 
 LABEL version="1.0.0"
 
-LABEL maintainer="Nishu Bansal" 
+LABEL maintainer="Microsoft Corporation" 
 LABEL com.github.actions.name="GitHub Action to trigger Azure release pipeline" 
 LABEL com.github.actions.description="Trigger Azure devops release pipeline" 
 LABEL com.github.actions.color="blue"  
