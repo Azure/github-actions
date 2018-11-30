@@ -30,12 +30,12 @@ then
 
   # Download parameters file if it is a remote URL
 
-  if [[ $AZURE_TEMPLATE_PARAM_FILE =~ $URI_REGEX ]]
+  if [[ $AZURE_TEMPLATE_PARAM_LOCATION =~ $URI_REGEX ]]
   then
-    PARAMETERS=$(curl $AZURE_TEMPLATE_PARAM_FILE)
-    echo "Downloaded parameters from ${AZURE_TEMPLATE_PARAM_FILE}"
+    PARAMETERS=$(curl $AZURE_TEMPLATE_PARAM_LOCATION)
+    echo "Downloaded parameters from ${AZURE_TEMPLATE_PARAM_LOCATION}"
   else
-    PARAMETERS_FILE="${GITHUB_WORKSPACE}/${AZURE_TEMPLATE_PARAM_FILE}"
+    PARAMETERS_FILE="${GITHUB_WORKSPACE}/${AZURE_TEMPLATE_PARAM_LOCATION}"
     if [[ ! -e "$PARAMETERS_FILE" ]]
     then
       echo "Parameters file ${PARAMETERS_FILE} does not exists." >&2
