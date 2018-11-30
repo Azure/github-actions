@@ -1,0 +1,21 @@
+.github/*   @bansalaseem
+
+aks-deploy/*    @ds-ms @bansalaseem
+
+arm/*   @dikhakha @sachinma
+
+az-pipelines/*  @nishubansal @bansalaseem
+
+az-release-pipelines/*  @nishubansal @bansalaseem
+
+azure-cli/*     @dikhakha @sachinma
+
+dotnetcore-cli/*    @vincentdass @kmkumaran @SumiranAgg
+
+function-app-deploy/*   @vincentdass @kmkumaran @SumiranAgg
+
+function-app-container/*    @vincentdass @kmkumaran @SumiranAgg
+
+web-app-container/*     @vincentdass @kmkumaran @SumiranAgg
+
+web-app-deploy/*    @vincentdass @kmkumaran @SumiranAgg
