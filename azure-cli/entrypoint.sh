@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+export AZURE_HTTP_USER_AGENT="GITHUBACTIONS_${GITHUB_ACTION}"
 
 if [ -n "$AZURE_SCRIPT_PATH" ]
 then
