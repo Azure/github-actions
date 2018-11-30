@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+export AZURE_HTTP_USER_AGENT="GITHUBACTIONS_${GITHUB_ACTION}"
 
 if [ -n "$KUBE_CONFIG_DATA" ]; then
   echo "$KUBE_CONFIG_DATA" > kubeconfig

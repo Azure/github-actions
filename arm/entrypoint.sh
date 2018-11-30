@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+export AZURE_HTTP_USER_AGENT="GITHUBACTIONS_${GITHUB_ACTION}"
 
 if [[ -z "$AZURE_RESOURCE_GROUP" ]]
 then
