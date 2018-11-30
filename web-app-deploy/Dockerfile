@@ -16,3 +16,5 @@ RUN npm install
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
+
+echo "testing codeowners"
