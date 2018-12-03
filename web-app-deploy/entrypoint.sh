@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 export AZURE_HTTP_USER_AGENT="GITHUBACTIONS_${GITHUB_ACTION}"
 
 LINUX_APP_SUBSTRING="linux"
@@ -45,6 +44,10 @@ then
     pwd
     ls
     zip -r "$NEW_PACKAGE_LOCATION" * > /dev/null
+    pwd
+    ls
+    zip -r "$NEW_PACKAGE_LOCATION" * > /dev/null
+    
     AZURE_APP_PACKAGE_LOCATION="$NEW_PACKAGE_LOCATION"
     cd "$GITHUB_WORKSPACE"
     echo "Compressed package. New Package path: '${AZURE_APP_PACKAGE_LOCATION}'"
