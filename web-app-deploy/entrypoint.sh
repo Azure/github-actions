@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export AZURE_HTTP_USER_AGENT="GITHUBACTIONS_${GITHUB_ACTION}"
+set -e
 
 LINUX_APP_SUBSTRING="linux"
 
