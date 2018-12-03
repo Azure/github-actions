@@ -41,16 +41,7 @@ then
     NEW_PACKAGE_LOCATION="${GITHUB_WORKSPACE}/package_$RANDOM.zip"
     echo "Compressing Package '${AZURE_APP_PACKAGE_LOCATION}' to '$NEW_PACKAGE_LOCATION'"
     cd $AZURE_APP_PACKAGE_LOCATION
-    echo *****
-    pwd
-    ls -l
-    echo ******
-    zip -r "$NEW_PACKAGE_LOCATION" * >/dev/null
-    echo *****
-    pwd
-    ls -l
-    echo ******
-    
+    zip -b /tmp -r "$NEW_PACKAGE_LOCATION" * >/dev/null
     AZURE_APP_PACKAGE_LOCATION="$NEW_PACKAGE_LOCATION"
     cd "$GITHUB_WORKSPACE"
     echo "Compressed package. New Package path: '${AZURE_APP_PACKAGE_LOCATION}'"
