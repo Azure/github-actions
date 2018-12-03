@@ -42,12 +42,7 @@ then
     echo "Compressing Package '${AZURE_APP_PACKAGE_LOCATION}' to '$NEW_PACKAGE_LOCATION'"
     cd $AZURE_APP_PACKAGE_LOCATION
     pwd
-    ls
     zip -r "$NEW_PACKAGE_LOCATION" * > /dev/null
-    pwd
-    ls
-    zip -r "$NEW_PACKAGE_LOCATION" * > /dev/null
-    
     AZURE_APP_PACKAGE_LOCATION="$NEW_PACKAGE_LOCATION"
     cd "$GITHUB_WORKSPACE"
     echo "Compressed package. New Package path: '${AZURE_APP_PACKAGE_LOCATION}'"
