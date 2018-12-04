@@ -39,10 +39,10 @@ echo "Provided package path: '${AZURE_APP_PACKAGE_LOCATION}'"
 
 if [[ -d $AZURE_APP_PACKAGE_LOCATION ]];
 then
-    NEW_PACKAGE_LOCATION="${GITHUB_WORKSPACE}/package_$RANDOM.zip"
+    NEW_PACKAGE_LOCATION="/tmp/package_$RANDOM.zip"
     echo "Compressing Package '${AZURE_APP_PACKAGE_LOCATION}' to '$NEW_PACKAGE_LOCATION'"
     cd $AZURE_APP_PACKAGE_LOCATION
-    zip -b /tmp -r "$NEW_PACKAGE_LOCATION" * > /dev/null
+    zip -r "$NEW_PACKAGE_LOCATION" * > /dev/null
     AZURE_APP_PACKAGE_LOCATION="$NEW_PACKAGE_LOCATION"
     cd "$GITHUB_WORKSPACE"
     echo "Compressed package. New Package path: '${AZURE_APP_PACKAGE_LOCATION}'"
