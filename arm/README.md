@@ -26,7 +26,7 @@ action "Manage Azure Resources" {
 
 - `AZURE_RG_COMMAND` – **Optional**. 
 
-  - If `AZURE_RG_COMMAND` is not specified
+  - If `AZURE_RG_COMMAND` is not specified or is "create"
     - `AZURE_RESOURCE_GROUP` – **Mandatory** 
     - `AZURE_TEMPLATE_LOCATION` – **Mandatory** - Can we a URL or relative path in your github repository
     - `AZURE_TEMPLATE_PARAM_LOCATION` – **Mandatory** - Can we a URL or relative path in your github repository
