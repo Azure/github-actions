@@ -6,7 +6,7 @@
 ```
 
 action "Deploy containers on Azure Function App" {
-  uses = "actions/azure/functionscontainer@master"
+  uses = "Azure/github-actions/functionscontainer@master"
   secrets = ["DOCKER_PASSWORD"]
   env = {
     AZURE_APP_NAME = "<Azure App Name>"
