@@ -7,7 +7,7 @@
 ```
 
 action "Trigger Azure Pipelines" {
-  uses = "actions/azure/pipelines@master"
+  uses = "Azure/github-actions/pipelines@master"
   env = {
 		AZURE_PIPELINE_ORGANIZATION = "<Azure Organization Name>"
 		AZURE_PIPELINE_PROJECT = "<Azure Project Name>"
