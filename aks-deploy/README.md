@@ -7,7 +7,7 @@
 ```workflow
 
 action "Deploy to Azure Kubernetes Service" {
-  uses = "actions/azure/aks@master"
+  uses = "Azure/github-actions/aks@master"
   secrets = ["DOCKER_PASSWORD", "KUBE_CONFIG_DATA"]
   env = {
     AKS_CLUSTER_NAME = "<AKS Cluster Name>"
