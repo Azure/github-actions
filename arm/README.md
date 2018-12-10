@@ -1,7 +1,7 @@
 # GitHub Action for Managing Azure Resources
 
 This action can be used to create or update a resource group in Azure using the [Azure Resource Manager templates](https://azure.microsoft.com/en-in/documentation/articles/resource-group-template-deploy/)
-One can also use this delete a resource group, including all the resources within the resource group.
+One can also use this to delete a resource group, including all the resources within the resource group.
 
 
 ## Usage
