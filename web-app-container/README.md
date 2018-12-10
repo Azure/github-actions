@@ -6,7 +6,7 @@
 ```
 
 action "Deploy to Azure WebappContainer" {
-  uses = "actions/azure/containerwebapp@master"
+  uses = "Azure/github-actions/containerwebapp@master"
   secrets = ["DOCKER_PASSWORD"]
   env = {
     AZURE_APP_NAME = "<Azure App Name>"
