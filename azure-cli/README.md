@@ -12,7 +12,7 @@ To log into a Azure, we recommend using the [Azure Login](../azure-login) Action
   uses = "Azure/github-actions/cli@master"
   env = {
     AZURE_SCRIPT_PATH = "<Relative path in your repository>"
-    AZURE_SCRIPT = "az account list"
+    AZURE_SCRIPT = "<Azure CLI script>"
   }
    needs = ["Azure Login"]
 }
@@ -24,6 +24,6 @@ To log into a Azure, we recommend using the [Azure Login](../azure-login) Action
 
 One of AZURE_SCRIPT_PATH / AZURE_SCRIPT is mandatory, in case both are defined AZURE_SCRIPT_PATH gets preference.
 
-- `AZURE_SCRIPT` – **Optional** 
+- `AZURE_SCRIPT` – **Optional** Example: az account list
 - `AZURE_SCRIPT_PATH` – **Optional** 
 
