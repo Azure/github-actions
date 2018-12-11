@@ -1,5 +1,7 @@
 # GitHub Action for deploying to Azure Web App for Containers
 
+To log into a Azure, we recommend using the [Azure Login](https://github.com/Azure/github-actions/tree/master/login) Action.
+
 
 ## Usage
 
