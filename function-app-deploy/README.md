@@ -12,7 +12,7 @@ action "Deploy to Azure  Function App" {
   needs = ["Azure Login"]
   env = {
     AZURE_APP_NAME = "<Azure App Name>"
-    AZURE_APP_PACKAGE_LOCATION = "<Relative path in your repository>"
+    AZURE_APP_PACKAGE_LOCATION = "<Relative path in your repository to a folder/package containing application contents or containing a compressed zip file>"
   }
 }
 
