@@ -12,10 +12,10 @@ azure-cli/*     @dikhakha @sachinma
 
 dotnetcore-cli/*    @vincentdass @kmkumaran @SumiranAgg
 
-function-app-deploy/*   @vincentdass @kmkumaran @SumiranAgg
+functions/*   @vincentdass @kmkumaran @SumiranAgg
 
-function-app-container/*    @vincentdass @kmkumaran @SumiranAgg
+functionscontainer/*    @vincentdass @kmkumaran @SumiranAgg
 
-web-app-container/*     @vincentdass @kmkumaran @SumiranAgg
+containerwebapp/*     @vincentdass @kmkumaran @SumiranAgg
 
-web-app-deploy/*    @vincentdass @kmkumaran @SumiranAgg
+webapp/*    @vincentdass @kmkumaran @SumiranAgg
