@@ -8,6 +8,8 @@ LABEL com.github.actions.description="GitHub Action to interact with Azure using
 LABEL com.github.actions.icon="triange"
 LABEL com.github.actions.color="blue"
 
+ENV GITHUB_ACTION_NAME="Azure CLI"
+
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 

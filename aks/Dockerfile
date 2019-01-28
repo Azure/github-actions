@@ -8,6 +8,8 @@ LABEL com.github.actions.description="Creates a service and a deployment with th
 LABEL com.github.actions.icon="triange"
 LABEL com.github.actions.color="blue"
 
+ENV GITHUB_ACTION_NAME="Deploy a container image to an AKS cluster"
+
 RUN apk update \
   && rm -rf /var/cache/apk/* \
   && curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl \

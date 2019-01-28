@@ -7,6 +7,8 @@ LABEL com.github.actions.description="GitHub Action for Azure Web App container 
 LABEL com.github.actions.icon="cloud"
 LABEL com.github.actions.color="blue"
 
+ENV GITHUB_ACTION_NAME="Deploy containers on Azure Function App"
+
 COPY . .
 
 RUN chmod +x /entrypoint.sh
