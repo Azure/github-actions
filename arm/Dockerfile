@@ -8,6 +8,8 @@ LABEL com.github.actions.description="GitHub Action to deploy ARM template to Az
 LABEL com.github.actions.icon="triange"
 LABEL com.github.actions.color="blue"
 
+ENV GITHUB_ACTION_NAME="Manage Azure Resources"
+
 RUN apk update \
   && apk add --no-cache util-linux
 

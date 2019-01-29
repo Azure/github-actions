@@ -7,6 +7,8 @@ LABEL com.github.actions.description="GitHub Action for deploying Function App o
 LABEL com.github.actions.icon="cloud"
 LABEL com.github.actions.color="blue"
 
+ENV GITHUB_ACTION_NAME="Deploy to Azure Function App"
+
 RUN apk update && apk add nodejs=8.9.3-r1 && apk add zip
 
 COPY . .
