@@ -43,7 +43,7 @@ vsts configure --defaults instance=${AZDEVOPS_URL} project="${AZURE_BOARDS_PROJE
     
 vsts login --token ${AZURE_BOARDS_TOKEN}
 
-BOARDS_CREATE=$( vsts create work item --type "${AZURE_BOARDS_TYPE}" --title "${AZURE_BOARDS_TITLE}" --description "${AZURE_BOARDS_DESCRIPTION}" -f 80="FromGitHub" --output json )
+BOARDS_CREATE=$( vsts work item create --type "${AZURE_BOARDS_TYPE}" --title "${AZURE_BOARDS_TITLE}" --description "${AZURE_BOARDS_DESCRIPTION}" -f 80="FromGitHub" --output json )
 
 
 
