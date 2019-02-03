@@ -37,10 +37,31 @@ GITHUB_ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
 AZURE_BOARDS_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
 AZURE_BOARDS_DESCRIPTION=$(jq --raw-output .issue.body "$GITHUB_EVENT_PATH")
 
-if [ "$GITHUB_ACTION" = "opened" ]; then
-    RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" --title "${AZURE_BOARDS_TITLE}" --description "${AZURE_BOARDS_DESCRIPTION}" -f 80="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" --output json)
+case "$GITHUB_ACTION" in
+"opened")
+    echo "Creating work item..."
+    RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" \
+        --title "${AZURE_BOARDS_TITLE}" \
+        --description "${AZURE_BOARDS_DESCRIPTION}" \
+        -f 80="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" \
+        --output json)
     AZURE_BOARDS_ID=$(echo "${RESULTS}" | jq --raw-output .id)
 
     echo "Created work item #${AZURE_BOARDS_ID}"
-fi
+    ;;
+"reopened"|"closed")
+    [[ "$GITHUB_ACTION" = "reopened" ]] && NEW_STATE="New" || NEW_STATE="Done"
+
+    echo "Looking for work items with tag 'Issue ${GITHUB_ISSUE_NUMBER}'..."
+    IDS=$(vsts work item query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}'" | jq '.[].id' | xargs)
+
+    for ID in ${IDS}; do
+        echo "Setting work item ${ID} to state ${NEW_STATE}..."
+        RESULTS=$(vsts work item update --id "$ID" --state "$NEW_STATE")
+
+        RESULT_STATE=$(echo "${RESULTS}" | jq --raw-output '.fields["System.State"]')
+        echo "Work item ${ID} is now ${RESULT_STATE}"
+    done
+    ;;
+esac
 
