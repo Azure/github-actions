@@ -31,8 +31,15 @@ vsts configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_BOARDS
 
 vsts login --token "${AZURE_BOARDS_TOKEN}"
 
+GITHUB_ACTION=$(jq --raw-output .action "$GITHUB_EVENT_PATH")
+GITHUB_ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
 AZURE_BOARDS_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
 AZURE_BOARDS_DESCRIPTION=$(jq --raw-output .issue.body "$GITHUB_EVENT_PATH")
 
-BOARDS_CREATE=$( vsts work item create --type "${AZURE_BOARDS_TYPE}" --title "${AZURE_BOARDS_TITLE}" --description "${AZURE_BOARDS_DESCRIPTION}" -f 80="FromGitHub" --output json )
+if [ "$GITHUB_ACTION" = "opened" ]; then
+    RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" --title "${AZURE_BOARDS_TITLE}" --description "${AZURE_BOARDS_DESCRIPTION}" -f 80="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" --output json)
+    AZURE_BOARDS_ID=$(echo "${RESULTS}" | jq --raw-output .id)
+
+    echo "Created work item #${AZURE_BOARDS_ID}"
+fi
 
