@@ -2,26 +2,22 @@
 
 set -e 
 
-if [ -z "$AZURE_BOARDS_ORGANIZATION" ]; 
-then
+if [ -z "$AZURE_BOARDS_ORGANIZATION" ]; then
     echo "AZURE_BOARDS_ORGANIZATION is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_BOARDS_PROJECT" ]; 
-then
+if [ -z "$AZURE_BOARDS_PROJECT" ]; then
     echo "AZURE_BOARDS_PROJECT is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_BOARDS_TOKEN" ]; 
-then
+if [ -z "$AZURE_BOARDS_TOKEN" ]; then
     echo "AZURE_BOARDS_TOKEN is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_BOARDS_TYPE" ]; 
-then
+if [ -z "$AZURE_BOARDS_TYPE" ]; then
     echo "AZURE_BOARDS_TYPE is not set." >&2
     exit 1
 fi
