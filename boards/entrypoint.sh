@@ -17,15 +17,14 @@ if [ -z "$AZURE_BOARDS_TOKEN" ]; then
     exit 1
 fi
 
-if [ -z "$AZURE_BOARDS_TYPE" ]; then
-    echo "AZURE_BOARDS_TYPE is not set." >&2
-    exit 1
-fi
-
 if [ -z "$GITHUB_EVENT_PATH" ]; then
     echo "GITHUB_EVENT_PATH is not set." >&2
     exit 1
 fi
+
+AZURE_BOARDS_TYPE="${AZURE_BOARDS_TYPE:-Feature}"
+AZURE_BOARDS_CLOSED_STATE="${AZURE_BOARDS_CLOSED_STATE:-Done}"
+AZURE_BOARDS_REOPENED_STATE="${AZURE_BOARDS_REOPENED_STATE:-New}"
 
 AZURE_DEVOPS_URL="https://dev.azure.com/${AZURE_BOARDS_ORGANIZATION}/"
 vsts configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_BOARDS_PROJECT}"
@@ -50,7 +49,9 @@ case "$GITHUB_ACTION" in
     echo "Created work item #${AZURE_BOARDS_ID}"
     ;;
 "reopened"|"closed")
-    [[ "$GITHUB_ACTION" = "reopened" ]] && NEW_STATE="New" || NEW_STATE="Done"
+    [[ "$GITHUB_ACTION" = "reopened" ]] && \
+        NEW_STATE="$AZURE_BOARDS_REOPENED_STATE" || \
+        NEW_STATE="$AZURE_BOARDS_CLOSED_STATE"
 
     echo "Looking for work items with tag 'Issue ${GITHUB_ISSUE_NUMBER}'..."
     IDS=$(vsts work item query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}'" | jq '.[].id' | xargs)
