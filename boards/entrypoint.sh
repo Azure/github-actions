@@ -22,6 +22,11 @@ if [ -z "$AZURE_BOARDS_TYPE" ]; then
     exit 1
 fi
 
+if [ -z "$GITHUB_EVENT_PATH" ]; then
+    echo "GITHUB_EVENT_PATH is not set." >&2
+    exit 1
+fi
+
 AZURE_DEVOPS_URL="https://dev.azure.com/${AZURE_BOARDS_ORGANIZATION}/"
 vsts configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_BOARDS_PROJECT}"
 
