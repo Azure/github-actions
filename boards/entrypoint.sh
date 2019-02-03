@@ -27,7 +27,7 @@ then
 fi
 
 AZURE_DEVOPS_URL="https://dev.azure.com/${AZURE_BOARDS_ORGANIZATION}/"
-vsts configure --defaults instance=${AZURE_DEVOPS_URL} project="${AZURE_BOARDS_PROJECT}"
+vsts configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_BOARDS_PROJECT}"
 
 vsts login --token "${AZURE_BOARDS_TOKEN}"
 
