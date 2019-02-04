@@ -26,10 +26,6 @@ function work_items_for_issue {
     vsts work item query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}'" | jq '.[].id' | xargs
 }
 
-function issue_hyperlink {
-    "Created from <a href='${GITHUB_ISSUE_HTML_URL}'>Issue #${GITHUB_ISSUE_NUMBER}</a>"
-}
-
 AZURE_BOARDS_TYPE="${AZURE_BOARDS_TYPE:-Feature}"
 AZURE_BOARDS_CLOSED_STATE="${AZURE_BOARDS_CLOSED_STATE:-Done}"
 AZURE_BOARDS_REOPENED_STATE="${AZURE_BOARDS_REOPENED_STATE:-New}"
@@ -53,7 +49,7 @@ TRIGGER="${GITHUB_EVENT}/${GITHUB_ACTION}"
 case "$TRIGGER" in
 "issue/opened")
     echo "Creating work item..."
-    HYPERLINK=$(issue_hyperlink)
+    HYPERLINK="Created from <a href='${GITHUB_ISSUE_HTML_URL}'>Issue #${GITHUB_ISSUE_NUMBER}</a>"
     RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" \
         --title "${AZURE_BOARDS_TITLE}" \
         --description "${AZURE_BOARDS_DESCRIPTION}" \
