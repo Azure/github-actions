@@ -1,0 +1,22 @@
+resources:
+- repo: self
+
+pool:
+  vmimage: 'ubuntu-16.04'
+
+trigger:
+- master
+
+steps:
+- script: |
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck aks/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck arm/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck cli/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck containerwebapp/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck dotnetcore-cli/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck functions/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck functionscontainer/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck login/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck pipelines/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck releasepipelines/entrypoint.sh
+    docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck webapp/entrypoint.sh
