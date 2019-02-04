@@ -51,7 +51,7 @@ case "$TRIGGER" in
     RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" \
         --title "${AZURE_BOARDS_TITLE}" \
         --description "${AZURE_BOARDS_DESCRIPTION}" \
-        -f 80="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" \
+        -f System.Tags="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" \
         --output json)
     AZURE_BOARDS_ID=$(echo "${RESULTS}" | jq --raw-output .id)
 
