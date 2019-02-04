@@ -27,7 +27,7 @@ function work_items_for_issue {
 }
 
 function issue_hyperlink {
-    "Created from <a href=${GITHUB_ISSUE_HTML_URL}>Issue #${GITHUB_ISSUE_NUMBER}</a>"
+    "Created from <a href='${GITHUB_ISSUE_HTML_URL}'>Issue #${GITHUB_ISSUE_NUMBER}</a>"
 }
 
 AZURE_BOARDS_TYPE="${AZURE_BOARDS_TYPE:-Feature}"
