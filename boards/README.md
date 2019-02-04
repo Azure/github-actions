@@ -29,7 +29,5 @@ action "Create Azure Boards Work Item" {
 - `AZURE_BOARDS_ORGANIZATION` – **Mandatory** 
 - `AZURE_BOARDS_PROJECT` – **Mandatory** 
 - `AZURE_BOARDS_TYPE` – **Mandatory** 
-- `AZURE_BOARDS_TITLE` – **Mandatory** 
-- `AZURE_BOARDS_DESCRIPTION` – **Mandatory** 
 
 
