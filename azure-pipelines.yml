@@ -1,0 +1,14 @@
+resources:
+- repo: self
+
+pool:
+  vmImage: 'ubuntu-16.04'
+
+trigger:
+- master
+
+steps:
+- script: |
+    for SCRIPT in $(find . -type f -name \*\.sh | xargs); do
+      docker run --rm -v '$(Build.SourcesDirectory):/mnt' -t koalaman/shellcheck $SCRIPT
+    done
