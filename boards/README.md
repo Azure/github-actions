@@ -24,14 +24,14 @@ action "Create Azure Boards Work Item" {
 
 ### Secrets
 
-- `AZURE_BOARDS_TOKEN` – **Mandatory** 
+- `AZURE_BOARDS_TOKEN` – **Mandatory**; an access token to be used when creating/updating work items.  See [Authenticate access with personal access tokens](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) for details. 
 
 
 ### Environment variables
 
 - `AZURE_BOARDS_ORGANIZATION` – **Mandatory**
 - `AZURE_BOARDS_PROJECT` – **Mandatory** 
-- `AZURE_BOARDS_TYPE` – **Optional**; the type of work item to create.  Defaults to "Feature" if unset.
-- `AZURE_BOARDS_CLOSED_STATE` - **Optional**; the state to move the work item to when the GitHub issue is closed.  Defaults to "Done" if unset.
+- `AZURE_BOARDS_TYPE` – **Optional**; the type of work item to create.  Defaults to "Feature" if unset.  See [process doeumentation](https://docs.microsoft.com/en-us/azure/devops/boards/work-items/guidance/choose-process?view=azure-devops) for more details on work item types.
+- `AZURE_BOARDS_CLOSED_STATE` - **Optional**; the state to move the work item to when the GitHub issue is closed.  Defaults to "Closed" if unset.
 - `AZURE_BOARDS_REOPENED_STATE` - **Optional**; the state to move the work item to when the GitHub issue is reopened.  Defaults to "New" if unset.
 

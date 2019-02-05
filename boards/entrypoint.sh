@@ -29,15 +29,14 @@ function work_items_for_issue {
 AZURE_BOARDS_TYPE="${AZURE_BOARDS_TYPE:-Feature}"
 AZURE_BOARDS_CLOSED_STATE="${AZURE_BOARDS_CLOSED_STATE:-Closed}"
 AZURE_BOARDS_REOPENED_STATE="${AZURE_BOARDS_REOPENED_STATE:-New}"
-
 AZURE_DEVOPS_URL="https://dev.azure.com/${AZURE_BOARDS_ORGANIZATION}/"
+
 vsts configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_BOARDS_PROJECT}"
 
-vsts login --token ${AZURE_BOARDS_TOKEN}
+vsts login --token "${AZURE_BOARDS_TOKEN}"
 
 GITHUB_EVENT=$(jq --raw-output 'if .comment != null then "comment" else empty end' "$GITHUB_EVENT_PATH")
 GITHUB_EVENT=${GITHUB_EVENT:-$(jq --raw-output 'if .issue != null then "issue" else empty end' "$GITHUB_EVENT_PATH")}
-
 GITHUB_ACTION=$(jq --raw-output .action "$GITHUB_EVENT_PATH")
 GITHUB_ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
 GITHUB_ISSUE_HTML_URL=$(jq --raw-output .issue.html_url "$GITHUB_EVENT_PATH")
@@ -67,9 +66,8 @@ case "$TRIGGER" in
         NEW_STATE="$AZURE_BOARDS_CLOSED_STATE"
 
     echo "Looking for work items with tag 'Issue ${GITHUB_ISSUE_NUMBER}'..."
-    IDS=$(work_items_for_issue)
 
-    for ID in "${IDS}"; do
+    for ID in $(work_items_for_issue); do
         echo "Setting work item ${ID} to state ${NEW_STATE}..."
         RESULTS=$(vsts work item update --id "$ID" --state "$NEW_STATE")
 
@@ -80,9 +78,8 @@ case "$TRIGGER" in
 
 "comment/created")
     echo "Looking for work items with tag 'Issue ${GITHUB_ISSUE_NUMBER}'..."
-    IDS=$(work_items_for_issue)
 
-    for ID in "${IDS}"; do
+    for ID in $(work_items_for_issue); do
         HEADER="Comment from @$(jq --raw-output .comment.user.login "$GITHUB_EVENT_PATH"): "
         BODY=$(jq --raw-output .comment.body "$GITHUB_EVENT_PATH")
 
