@@ -56,7 +56,7 @@ fi
 BUILD_DEFINITION_ID=$(echo "${PIPELINES}" | jq -r ".[0]?.id //empty")
 BUILD_DEFINITION=$(vsts build definition show --id "${BUILD_DEFINITION_ID}" --output json)
 
-if (echo "${BUILD_DEFINITION}" | jq -e .); then
+if ! (echo "${BUILD_DEFINITION}" | jq -e .); then
     echo "Failed to  get pipeline using Id: ${BUILD_DEFINITION_ID}. Error: ${BUILD_DEFINITION}"
     exit 1;
 fi 
@@ -77,7 +77,7 @@ then
 	exit 1;
 fi
 
-if (echo "${BUILD_OUTPUT}" | jq -e .); then
+if ! (echo "${BUILD_OUTPUT}" | jq -e .); then
     echo "Failed to queue pipeline. Error: ${BUILD_OUTPUT}"
     exit 1;
 fi
