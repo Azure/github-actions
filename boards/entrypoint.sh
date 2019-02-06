@@ -22,6 +22,10 @@ if [ -z "$GITHUB_EVENT_PATH" ]; then
     exit 1
 fi
 
+function parse_markdown {
+    markdown -f fencedcode -f githubtags
+}
+
 function create_work_item {
     echo "Creating work item..."
     HYPERLINK="Created from <a href='${GITHUB_ISSUE_HTML_URL}'>Issue #${GITHUB_ISSUE_NUMBER}</a>"
@@ -55,7 +59,7 @@ GITHUB_ACTION=$(jq --raw-output .action "$GITHUB_EVENT_PATH")
 GITHUB_ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
 GITHUB_ISSUE_HTML_URL=$(jq --raw-output .issue.html_url "$GITHUB_EVENT_PATH")
 AZURE_BOARDS_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
-AZURE_BOARDS_DESCRIPTION=$(jq --raw-output .issue.body "$GITHUB_EVENT_PATH" | markdown)
+AZURE_BOARDS_DESCRIPTION=$(jq --raw-output .issue.body "$GITHUB_EVENT_PATH" | parse_markdown)
 
 TRIGGER="${GITHUB_EVENT}/${GITHUB_ACTION}"
 
@@ -104,7 +108,7 @@ case "$TRIGGER" in
 
     for ID in $(work_items_for_issue); do
         HEADER="Comment from @$(jq --raw-output .comment.user.login "$GITHUB_EVENT_PATH"): "
-        BODY=$(jq --raw-output .comment.body "$GITHUB_EVENT_PATH" | markdown)
+        BODY=$(jq --raw-output .comment.body "$GITHUB_EVENT_PATH" | parse_markdown)
 
         echo "Adding comment to work item ${ID}..."
         RESULTS=$(vsts work item update --id "$ID" --discussion "<p>${HEADER}</p>${BODY}")
