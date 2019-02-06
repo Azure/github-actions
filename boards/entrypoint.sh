@@ -22,6 +22,24 @@ if [ -z "$GITHUB_EVENT_PATH" ]; then
     exit 1
 fi
 
+function parse_markdown {
+    markdown -f fencedcode -f githubtags
+}
+
+function create_work_item {
+    echo "Creating work item..."
+    HYPERLINK="Created from <a href='${GITHUB_ISSUE_HTML_URL}'>Issue #${GITHUB_ISSUE_NUMBER}</a>"
+    RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" \
+        --title "${AZURE_BOARDS_TITLE}" \
+        --description "<p>Here's this...</p><p>${AZURE_BOARDS_DESCRIPTION}</p>" \
+        -f System.Tags="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" \
+        --discussion "${HYPERLINK}" \
+        --output json)
+    AZURE_BOARDS_ID=$(echo "${RESULTS}" | jq --raw-output .id)
+
+    echo "Created work item #${AZURE_BOARDS_ID}"
+}
+
 function work_items_for_issue {
     vsts work item query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}'" | jq '.[].id' | xargs
 }
@@ -41,23 +59,32 @@ GITHUB_ACTION=$(jq --raw-output .action "$GITHUB_EVENT_PATH")
 GITHUB_ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
 GITHUB_ISSUE_HTML_URL=$(jq --raw-output .issue.html_url "$GITHUB_EVENT_PATH")
 AZURE_BOARDS_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
-AZURE_BOARDS_DESCRIPTION=$(jq --raw-output .issue.body "$GITHUB_EVENT_PATH")
+AZURE_BOARDS_DESCRIPTION=$(jq --raw-output .issue.body "$GITHUB_EVENT_PATH" | parse_markdown)
 
 TRIGGER="${GITHUB_EVENT}/${GITHUB_ACTION}"
 
+env
+cat $GITHUB_EVENT_PATH
+
 case "$TRIGGER" in
 "issue/opened")
-    echo "Creating work item..."
-    HYPERLINK="Created from <a href='${GITHUB_ISSUE_HTML_URL}'>Issue #${GITHUB_ISSUE_NUMBER}</a>"
-    RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" \
-        --title "${AZURE_BOARDS_TITLE}" \
-        --description "${AZURE_BOARDS_DESCRIPTION}" \
-        -f System.Tags="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" \
-        --discussion "${HYPERLINK}" \
-        --output json)
-    AZURE_BOARDS_ID=$(echo "${RESULTS}" | jq --raw-output .id)
+    # If there's a GitHub issue label configured then don't create a
+    # corresponding Azure Boards work item.  Wait for a labelled event
+    # to create the work item.
+    if [ -z "$ISSUE_LABEL" ]; then
+        create_work_item
+    fi
+    ;;
 
-    echo "Created work item #${AZURE_BOARDS_ID}"
+"issue/labeled")
+    # If there's a GitHub issue label configured then see if that was the
+    # label applied.  If so, create a new Azure Boards work item to
+    # correspond to this issue.
+    NEW_LABEL=$(jq --raw-output .label.name "$GITHUB_EVENT_PATH")
+
+    if [ ! -z "$ISSUE_LABEL" ] && [[ "$NEW_LABEL" == "$ISSUE_LABEL" ]]; then
+        create_work_item
+    fi
     ;;
 
 "issue/reopened"|"issue/closed")
@@ -81,10 +108,10 @@ case "$TRIGGER" in
 
     for ID in $(work_items_for_issue); do
         HEADER="Comment from @$(jq --raw-output .comment.user.login "$GITHUB_EVENT_PATH"): "
-        BODY=$(jq --raw-output .comment.body "$GITHUB_EVENT_PATH")
+        BODY=$(jq --raw-output .comment.body "$GITHUB_EVENT_PATH" | parse_markdown)
 
         echo "Adding comment to work item ${ID}..."
-        RESULTS=$(vsts work item update --id "$ID" --discussion "${HEADER}${BODY}")
+        RESULTS=$(vsts work item update --id "$ID" --discussion "<p>${HEADER}</p>${BODY}")
     done
     ;;
 esac
