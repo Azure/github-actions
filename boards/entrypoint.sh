@@ -31,7 +31,7 @@ function create_work_item {
     HYPERLINK="Created from <a href='${GITHUB_ISSUE_HTML_URL}'>Issue #${GITHUB_ISSUE_NUMBER}</a>"
     RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" \
         --title "${AZURE_BOARDS_TITLE}" \
-        --description "<p>Here's this...</p><p>${AZURE_BOARDS_DESCRIPTION}</p>" \
+        --description "${AZURE_BOARDS_DESCRIPTION}" \
         -f System.Tags="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" \
         --discussion "${HYPERLINK}" \
         --output json)
@@ -62,9 +62,6 @@ AZURE_BOARDS_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
 AZURE_BOARDS_DESCRIPTION=$(jq --raw-output .issue.body "$GITHUB_EVENT_PATH" | parse_markdown)
 
 TRIGGER="${GITHUB_EVENT}/${GITHUB_ACTION}"
-
-env
-cat $GITHUB_EVENT_PATH
 
 case "$TRIGGER" in
 "issue/opened")
