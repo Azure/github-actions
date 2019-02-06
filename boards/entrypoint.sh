@@ -104,10 +104,10 @@ case "$TRIGGER" in
 
     for ID in $(work_items_for_issue); do
         HEADER="Comment from @$(jq --raw-output .comment.user.login "$GITHUB_EVENT_PATH"): "
-        BODY=$(jq --raw-output .comment.body "$GITHUB_EVENT_PATH")
+        BODY=$(jq --raw-output .comment.body "$GITHUB_EVENT_PATH" | markdown)
 
         echo "Adding comment to work item ${ID}..."
-        RESULTS=$(vsts work item update --id "$ID" --discussion "${HEADER}${BODY}")
+        RESULTS=$(vsts work item update --id "$ID" --discussion "<p>${HEADER}</p>${BODY}")
     done
     ;;
 esac
