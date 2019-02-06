@@ -22,6 +22,20 @@ if [ -z "$GITHUB_EVENT_PATH" ]; then
     exit 1
 fi
 
+function create_work_item {
+    echo "Creating work item..."
+    HYPERLINK="Created from <a href='${GITHUB_ISSUE_HTML_URL}'>Issue #${GITHUB_ISSUE_NUMBER}</a>"
+    RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" \
+        --title "${AZURE_BOARDS_TITLE}" \
+        --description "<p>Here's this...</p><p>${AZURE_BOARDS_DESCRIPTION}</p>" \
+        -f System.Tags="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" \
+        --discussion "${HYPERLINK}" \
+        --output json)
+    AZURE_BOARDS_ID=$(echo "${RESULTS}" | jq --raw-output .id)
+
+    echo "Created work item #${AZURE_BOARDS_ID}"
+}
+
 function work_items_for_issue {
     vsts work item query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}'" | jq '.[].id' | xargs
 }
@@ -45,19 +59,28 @@ AZURE_BOARDS_DESCRIPTION=$(jq --raw-output .issue.body "$GITHUB_EVENT_PATH")
 
 TRIGGER="${GITHUB_EVENT}/${GITHUB_ACTION}"
 
+env
+cat $GITHUB_EVENT_PATH
+
 case "$TRIGGER" in
 "issue/opened")
-    echo "Creating work item..."
-    HYPERLINK="Created from <a href='${GITHUB_ISSUE_HTML_URL}'>Issue #${GITHUB_ISSUE_NUMBER}</a>"
-    RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" \
-        --title "${AZURE_BOARDS_TITLE}" \
-        --description "${AZURE_BOARDS_DESCRIPTION}" \
-        -f System.Tags="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" \
-        --discussion "${HYPERLINK}" \
-        --output json)
-    AZURE_BOARDS_ID=$(echo "${RESULTS}" | jq --raw-output .id)
+    # If there's a GitHub issue label configured then don't create a
+    # corresponding Azure Boards work item.  Wait for a labelled event
+    # to create the work item.
+    if [ -z "$ISSUE_LABEL" ]; then
+        create_work_item
+    fi
+    ;;
 
-    echo "Created work item #${AZURE_BOARDS_ID}"
+"issue/labeled")
+    # If there's a GitHub issue label configured then see if that was the
+    # label applied.  If so, create a new Azure Boards work item to
+    # correspond to this issue.
+    NEW_LABEL=$(jq --raw-output .label.name "$GITHUB_EVENT_PATH")
+
+    if [ ! -z "$ISSUE_LABEL" ] && [[ "$NEW_LABEL" == "$ISSUE_LABEL" ]]; then
+        create_work_item
+    fi
     ;;
 
 "issue/reopened"|"issue/closed")
