@@ -32,7 +32,7 @@ function create_work_item {
     RESULTS=$(vsts work item create --type "${AZURE_BOARDS_TYPE}" \
         --title "${AZURE_BOARDS_TITLE}" \
         --description "${AZURE_BOARDS_DESCRIPTION}" \
-        -f System.Tags="GitHub; Issue ${GITHUB_ISSUE_NUMBER}" \
+        -f System.Tags="GitHub; Issue ${GITHUB_ISSUE_NUMBER}; ${GITHUB_REPO_FULL_NAME}" \
         --discussion "${HYPERLINK}" \
         --output json)
     AZURE_BOARDS_ID=$(echo "${RESULTS}" | jq --raw-output .id)
@@ -41,7 +41,7 @@ function create_work_item {
 }
 
 function work_items_for_issue {
-    vsts work item query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}'" | jq '.[].id' | xargs
+    vsts work item query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}' AND [System.Tags] CONTAINS '${GITHUB_REPO_FULL_NAME}'" | jq '.[].id' | xargs
 }
 
 AZURE_BOARDS_TYPE="${AZURE_BOARDS_TYPE:-Feature}"
@@ -58,6 +58,7 @@ GITHUB_EVENT=${GITHUB_EVENT:-$(jq --raw-output 'if .issue != null then "issue" e
 GITHUB_ACTION=$(jq --raw-output .action "$GITHUB_EVENT_PATH")
 GITHUB_ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
 GITHUB_ISSUE_HTML_URL=$(jq --raw-output .issue.html_url "$GITHUB_EVENT_PATH")
+GITHUB_REPO_FULL_NAME=$(jq --raw-output .repository.full_name "$GITHUB_EVENT_PATH")
 AZURE_BOARDS_TITLE=$(jq --raw-output .issue.title "$GITHUB_EVENT_PATH")
 AZURE_BOARDS_DESCRIPTION=$(jq --raw-output .issue.body "$GITHUB_EVENT_PATH" | parse_markdown)
 
@@ -89,7 +90,7 @@ case "$TRIGGER" in
         NEW_STATE="$AZURE_BOARDS_REOPENED_STATE" || \
         NEW_STATE="$AZURE_BOARDS_CLOSED_STATE"
 
-    echo "Looking for work items with tag 'Issue ${GITHUB_ISSUE_NUMBER}'..."
+    echo "Looking for work items with tags 'Issue ${GITHUB_ISSUE_NUMBER}' and '${GITHUB_REPO_FULL_NAME}'..."
 
     for ID in $(work_items_for_issue); do
         echo "Setting work item ${ID} to state ${NEW_STATE}..."
@@ -101,7 +102,7 @@ case "$TRIGGER" in
     ;;
 
 "comment/created")
-    echo "Looking for work items with tag 'Issue ${GITHUB_ISSUE_NUMBER}'..."
+    echo "Looking for work items with tags 'Issue ${GITHUB_ISSUE_NUMBER}' and '${GITHUB_REPO_FULL_NAME}'..."
 
     for ID in $(work_items_for_issue); do
         HEADER="Comment from @$(jq --raw-output .comment.user.login "$GITHUB_EVENT_PATH"): "
