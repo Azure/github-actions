@@ -1,4 +1,7 @@
+[![Build & Test][build-badge]][win-build]
 
+[build-badge]: https://dev.azure.com/mseng/PipelineTools/_apis/build/status/8134
+[win-build]: https://dev.azure.com/mseng/PipelineTools/_build/latest?definitionId=8134
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
