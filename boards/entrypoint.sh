@@ -80,7 +80,7 @@ case "$TRIGGER" in
     # correspond to this issue.
     NEW_LABEL=$(jq --raw-output .label.name "$GITHUB_EVENT_PATH")
 
-    if [ ! -z "$ISSUE_LABEL" ] && [[ "$NEW_LABEL" == "$ISSUE_LABEL" ]]; then
+    if [ -n "$ISSUE_LABEL" ] && [[ "$NEW_LABEL" == "$ISSUE_LABEL" ]]; then
         create_work_item
     fi
     ;;
