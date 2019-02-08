@@ -50,11 +50,25 @@ fi
 
 echo "Initiating Container deployment..."
 
-az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" \
-    --docker-custom-image-name "${CONTAINER_IMAGE_NAME}" \
-    --docker-registry-server-user "${DOCKER_USERNAME}" \
-    --docker-registry-server-password "${DOCKER_PASSWORD}" \
-    --docker-registry-server-url "${DOCKER_REGISTRY_URL}"
+if [[ -n $DOCKER_USERNAME && -n $DOCKER_PASSWORD && -n $DOCKER_REGISTRY_URL ]]; then
+    az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" \
+        --docker-custom-image-name "${CONTAINER_IMAGE_NAME}" \
+        --docker-registry-server-user "${DOCKER_USERNAME}" \
+        --docker-registry-server-password "${DOCKER_PASSWORD}" \
+        --docker-registry-server-url "${DOCKER_REGISTRY_URL}"
+elif [[ -n $DOCKER_USERNAME && -n $DOCKER_PASSWORD ]]; then
+    az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" \
+        --docker-custom-image-name "${CONTAINER_IMAGE_NAME}" \
+        --docker-registry-server-user "${DOCKER_USERNAME}" \
+        --docker-registry-server-password "${DOCKER_PASSWORD}" 
+elif [[ -n $DOCKER_REGISTRY_URL ]]; then
+    az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" \
+        --docker-custom-image-name "${CONTAINER_IMAGE_NAME}" \
+        --docker-registry-server-url "${DOCKER_REGISTRY_URL}"
+else 
+    az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" \
+        --docker-custom-image-name "${CONTAINER_IMAGE_NAME}"
+fi
 
 echo "Configured image details to Azure Web App"
 
