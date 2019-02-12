@@ -1,3 +1,3 @@
-#!/bin/sh -l
+#!/bin/bash
 
 sh -c "dotnet $*"

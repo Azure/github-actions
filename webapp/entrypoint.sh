@@ -25,7 +25,7 @@ then
     exit 1
 fi
 
-RESOURCE_GROUP_NAME=`az resource list -n "${AZURE_APP_NAME}" --resource-type "Microsoft.Web/Sites" --query '[0].resourceGroup' | xargs`
+RESOURCE_GROUP_NAME=$(az resource list -n "${AZURE_APP_NAME}" --resource-type "Microsoft.Web/Sites" --query '[0].resourceGroup' | xargs)
 
 if [[ -z $RESOURCE_GROUP_NAME ]];
 then
@@ -41,14 +41,14 @@ if [[ -d $AZURE_APP_PACKAGE_LOCATION ]];
 then
     NEW_PACKAGE_LOCATION="/tmp/package_$RANDOM.zip"
     echo "Compressing Package '${AZURE_APP_PACKAGE_LOCATION}' to '$NEW_PACKAGE_LOCATION'"
-    cd $AZURE_APP_PACKAGE_LOCATION
-    zip -r "$NEW_PACKAGE_LOCATION" * > /dev/null
+    cd "$AZURE_APP_PACKAGE_LOCATION"
+    zip -r "$NEW_PACKAGE_LOCATION" ./* > /dev/null
     AZURE_APP_PACKAGE_LOCATION="$NEW_PACKAGE_LOCATION"
     cd "$GITHUB_WORKSPACE"
     echo "Compressed package. New Package path: '${AZURE_APP_PACKAGE_LOCATION}'"
 fi
 
-APP_KIND=`az resource show -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" --resource-type "Microsoft.Web/Sites" --query 'kind'` 
+APP_KIND=$(az resource show -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" --resource-type "Microsoft.Web/Sites" --query 'kind')
 
 echo "Web App type : ${APP_KIND}"
 
@@ -56,7 +56,7 @@ echo "Initiating Web App Deployment"
 
 if [[ ! $APP_KIND =~ $LINUX_APP_SUBSTRING ]];
 then
-    WEBSITE_RUN_FROM_PACKAGE=`az webapp config appsettings list -n ${AZURE_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITE_RUN_FROM_PACKAGE')].value" -o tsv`
+    WEBSITE_RUN_FROM_PACKAGE=$(az webapp config appsettings list -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" --query "[?(@.name=='WEBSITE_RUN_FROM_PACKAGE')].value" -o tsv)
     if [[ ! $WEBSITE_RUN_FROM_PACKAGE == "1" ]];
     then
         echo "Setting App Setting WEBSITE_RUN_FROM_PACKAGE = 1 ..."
@@ -66,10 +66,10 @@ then
     fi
 fi
 
-PUBLISH_PROFILE=`az webapp deployment list-publishing-profiles -n ${AZURE_APP_NAME} -g ${RESOURCE_GROUP_NAME}`
+PUBLISH_PROFILE=$(az webapp deployment list-publishing-profiles -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}")
 
-DEPLOYUSER=`node -pe 'JSON.parse(process.argv[1])[0].userName' "${PUBLISH_PROFILE}"`
-DEPLOYPASS=`node -pe 'JSON.parse(process.argv[1])[0].userPWD' "${PUBLISH_PROFILE}"`
+DEPLOYUSER=$(node -pe 'JSON.parse(process.argv[1])[0].userName' "${PUBLISH_PROFILE}")
+DEPLOYPASS=$(node -pe 'JSON.parse(process.argv[1])[0].userPWD' "${PUBLISH_PROFILE}")
 
 echo "Retrieved publishing credentials for the app."
 
@@ -77,9 +77,9 @@ echo "Initiating Zip Deploy"
 
 export DEPLOYER='GITHUB'
 
-node /node_modules/typed-azure-client/runner/kuduService.js --action zipdeploy --scmUri "https://${AZURE_APP_NAME}.scm.azurewebsites.net" --username $DEPLOYUSER --password $DEPLOYPASS --package "$AZURE_APP_PACKAGE_LOCATION"
+node /node_modules/typed-azure-client/runner/kuduService.js --action zipdeploy --scmUri "https://${AZURE_APP_NAME}.scm.azurewebsites.net" --username "$DEPLOYUSER" --password "$DEPLOYPASS" --package "$AZURE_APP_PACKAGE_LOCATION"
 
 echo "Package Deployed to Azure Web App."
 
-DESTINATION_URL=`node -pe 'JSON.parse(process.argv[1])[0].destinationAppUrl' "${PUBLISH_PROFILE}"`
+DESTINATION_URL=$(node -pe 'JSON.parse(process.argv[1])[0].destinationAppUrl' "${PUBLISH_PROFILE}")
 echo "Web App Application URL: ${DESTINATION_URL}"

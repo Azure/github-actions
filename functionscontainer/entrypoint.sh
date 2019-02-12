@@ -19,7 +19,7 @@ then
     exit 1
 fi
 
-RESOURCE_GROUP_NAME=`az resource list -n "${AZURE_APP_NAME}" --resource-type "Microsoft.Web/Sites" --query '[0].resourceGroup' | xargs`
+RESOURCE_GROUP_NAME=$(az resource list -n "${AZURE_APP_NAME}" --resource-type "Microsoft.Web/Sites" --query '[0].resourceGroup' | xargs)
 
 if [[ -z $RESOURCE_GROUP_NAME ]];
 then
@@ -27,13 +27,13 @@ then
     exit 1
 fi
 
-if [[ $DOCKER_REGISTRY_URL =~ "$AZURE_CR_SUFFIX" ]];
+if [[ $DOCKER_REGISTRY_URL =~ $AZURE_CR_SUFFIX ]];
 then
     # remove http:// and https:// before appending container name to image
     DOCKER_REGISTRY_NAME=${DOCKER_REGISTRY_URL#"http://"}
     DOCKER_REGISTRY_NAME=${DOCKER_REGISTRY_NAME#"https://"}
 
-    if [[ ! CONTAINER_IMAGE_NAME =~ "$DOCKER_REGISTRY_NAME" ]];
+    if [[ ! CONTAINER_IMAGE_NAME =~ $DOCKER_REGISTRY_NAME ]];
     then
         # Append container name with image
         CONTAINER_IMAGE_NAME="$DOCKER_REGISTRY_NAME/$CONTAINER_IMAGE_NAME"
@@ -43,7 +43,7 @@ fi
 echo "Resource Group Name: ${RESOURCE_GROUP_NAME}"
 
 
-WEBSITES_ENABLE_APP_SERVICE_STORAGE=`az webapp config appsettings list -n ${AZURE_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query "[?(@.name=='WEBSITES_ENABLE_APP_SERVICE_STORAGE')].value" -o tsv`
+WEBSITES_ENABLE_APP_SERVICE_STORAGE=$(az webapp config appsettings list -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" --query "[?(@.name=='WEBSITES_ENABLE_APP_SERVICE_STORAGE')].value" -o tsv)
 
 if [[ ! $WEBSITES_ENABLE_APP_SERVICE_STORAGE == "false" ]];
 then
@@ -52,28 +52,34 @@ then
     echo "Set WEBSITES_ENABLE_APP_SERVICE_STORAGE = false successfully!"
 fi
 
-AZCLI_ARGUMENT=" --docker-custom-image-name ${CONTAINER_IMAGE_NAME}"
-
-if [[ ! -z $CONTAINER_IMAGE_TAG ]];
+if [[ -n $CONTAINER_IMAGE_TAG ]];
 then
-    AZCLI_ARGUMENT="${AZCLI_ARGUMENT}:${CONTAINER_IMAGE_TAG}"
-fi
-
-if [[ ! -z $DOCKER_USERNAME && ! -z $DOCKER_PASSWORD ]];
-then
-    AZCLI_ARGUMENT="${AZCLI_ARGUMENT} --docker-registry-server-user ${DOCKER_USERNAME} --docker-registry-server-password ${DOCKER_PASSWORD}"
-fi
-
-if [[ ! -z $DOCKER_REGISTRY_URL ]]
-then
-    AZCLI_ARGUMENT="${AZCLI_ARGUMENT} --docker-registry-server-url ${DOCKER_REGISTRY_URL}"
+    CONTAINER_IMAGE_NAME="${CONTAINER_IMAGE_NAME}:${CONTAINER_IMAGE_TAG}"
 fi
 
 echo "Initiating Container deployment..."
 
-az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" $AZCLI_ARGUMENT
+if [[ -n $DOCKER_USERNAME && -n $DOCKER_PASSWORD && -n $DOCKER_REGISTRY_URL ]]; then
+    az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" \
+        --docker-custom-image-name "${CONTAINER_IMAGE_NAME}" \
+        --docker-registry-server-user "${DOCKER_USERNAME}" \
+        --docker-registry-server-password "${DOCKER_PASSWORD}" \
+        --docker-registry-server-url "${DOCKER_REGISTRY_URL}"
+elif [[ -n $DOCKER_USERNAME && -n $DOCKER_PASSWORD ]]; then
+    az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" \
+        --docker-custom-image-name "${CONTAINER_IMAGE_NAME}" \
+        --docker-registry-server-user "${DOCKER_USERNAME}" \
+        --docker-registry-server-password "${DOCKER_PASSWORD}" 
+elif [[ -n $DOCKER_REGISTRY_URL ]]; then
+    az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" \
+        --docker-custom-image-name "${CONTAINER_IMAGE_NAME}" \
+        --docker-registry-server-url "${DOCKER_REGISTRY_URL}"
+else 
+    az webapp config container set -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" \
+        --docker-custom-image-name "${CONTAINER_IMAGE_NAME}" 
+fi
 
 echo "Configured image details to Azure Function App"
 
-DESTINATION_URL=`az webapp deployment list-publishing-profiles -n ${AZURE_APP_NAME} -g ${RESOURCE_GROUP_NAME} --query '[0].destinationAppUrl' -o tsv`
+DESTINATION_URL=$(az webapp deployment list-publishing-profiles -n "${AZURE_APP_NAME}" -g "${RESOURCE_GROUP_NAME}" --query '[0].destinationAppUrl' -o tsv)
 echo "Azure Function App Application URL: ${DESTINATION_URL}"

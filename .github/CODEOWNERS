@@ -4,11 +4,9 @@ aks/*    @ds-ms @bansalaseem
 
 arm/*   @dikhakha @sachinma
 
-az-pipelines/*  @nishubansal @bansalaseem
+cli/*     @dikhakha @sachinma
 
-az-release-pipelines/*  @nishubansal @bansalaseem
-
-azure-cli/*     @dikhakha @sachinma
+containerwebapp/*     @vincentdass @kmkumaran @SumiranAgg
 
 dotnetcore-cli/*    @vincentdass @kmkumaran @SumiranAgg
 
@@ -16,6 +14,10 @@ functions/*   @vincentdass @kmkumaran @SumiranAgg
 
 functionscontainer/*    @vincentdass @kmkumaran @SumiranAgg
 
-containerwebapp/*     @vincentdass @kmkumaran @SumiranAgg
+login/*     @dikhakha @sachinma
+
+pipelines/*  @nishubansal @bansalaseem
+
+releasepipelines/*  @nishubansal @bansalaseem
 
 webapp/*    @vincentdass @kmkumaran @SumiranAgg

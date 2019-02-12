@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 export AZURE_HTTP_USER_AGENT="GITHUBACTIONS_${GITHUB_ACTION_NAME}_${GITHUB_REPOSITORY}"
@@ -8,7 +8,7 @@ then
   SCRIPT_FILE="${GITHUB_WORKSPACE}/${AZURE_SCRIPT_PATH}"
   if [[ -e "$SCRIPT_FILE" ]]
   then
-    chmod +x $SCRIPT_FILE
+    chmod +x "$SCRIPT_FILE"
     $SCRIPT_FILE
   else
     echo "Script file ${SCRIPT_FILE} does not exists." >&2
