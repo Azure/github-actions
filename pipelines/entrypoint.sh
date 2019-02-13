@@ -2,27 +2,23 @@
 
 set -e 
 
-if [ -z "$AZURE_PIPELINE_ORGANIZATION" ]; 
-then
-    echo "\$AZURE_PIPELINE_ORGANIZATION is not set." >&2
+if [ -z "$AZURE_PIPELINE_ORGANIZATION" ]; then
+    echo "AZURE_PIPELINE_ORGANIZATION is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_PROJECT" ]; 
-then
-    echo "\$AZURE_PIPELINE_PROJECT is not set." >&2
+if [ -z "$AZURE_PIPELINE_PROJECT" ]; then
+    echo "AZURE_PIPELINE_PROJECT is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_TOKEN" ]; 
-then
-    echo "\$AZURE_PIPELINE_TOKEN is not set." >&2
+if [ -z "$AZURE_PIPELINE_TOKEN" ]; then
+    echo "AZURE_PIPELINE_TOKEN is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_NAME" ]; 
-then
-    echo "\$AZURE_PIPELINE_NAME is not set." >&2
+if [ -z "$AZURE_PIPELINE_NAME" ]; then
+    echo "AZURE_PIPELINE_NAME is not set." >&2
     exit 1
 fi
 
