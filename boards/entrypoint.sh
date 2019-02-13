@@ -2,8 +2,8 @@
 
 set -e 
 
-if [ -z "$AZURE_DEVOPS_ORGANIZATION" ]; then
-    echo "AZURE_DEVOPS_ORGANIZATION is not set." >&2
+if [ -z "$AZURE_DEVOPS_URL" -a -z "$AZURE_DEVOPS_ORGANIZATION" ]; then
+    echo "AZURE_DEVOPS_URL and AZURE_DEVOPS_ORGANIZATION are not set." >&2
     exit 1
 fi
 
@@ -44,10 +44,13 @@ function work_items_for_issue {
     vsts work item query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}' AND [System.Tags] CONTAINS '${GITHUB_REPO_FULL_NAME}'" | jq '.[].id' | xargs
 }
 
+if [ -z "$AZURE_DEVOPS_URL" ]; then
+    AZURE_DEVOPS_URL="https://dev.azure.com/${AZURE_DEVOPS_ORGANIZATION}/"
+fi
+
 AZURE_BOARDS_TYPE="${AZURE_BOARDS_TYPE:-Feature}"
 AZURE_BOARDS_CLOSED_STATE="${AZURE_BOARDS_CLOSED_STATE:-Closed}"
 AZURE_BOARDS_REOPENED_STATE="${AZURE_BOARDS_REOPENED_STATE:-Active}"
-AZURE_DEVOPS_URL="https://dev.azure.com/${AZURE_DEVOPS_ORGANIZATION}/"
 
 vsts configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_DEVOPS_PROJECT}"
 

@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-if [ -z "$AZURE_DEVOPS_ORGANIZATION" ]; then
-    echo "AZURE_DEVOPS_ORGANIZATION is not set."
+if [ -z "$AZURE_DEVOPS_URL" -a -z "$AZURE_DEVOPS_ORGANIZATION" ]; then
+    echo "AZURE_DEVOPS_URL and AZURE_DEVOPS_ORGANIZATION are not set." >&2
     exit 1
 fi
 
@@ -21,10 +21,12 @@ if [ -z "$AZURE_PIPELINE_NAME" ]; then
     exit 1
 fi
 
-    
-AZDEVOPS_URL="https://dev.azure.com/${AZURE_DEVOPS_ORGANIZATION}/"
-vsts configure --defaults instance="${AZDEVOPS_URL}" project="${AZURE_DEVOPS_PROJECT}"
-    
+if [ -z "$AZURE_DEVOPS_URL" ]; then
+    AZURE_DEVOPS_URL="https://dev.azure.com/${AZURE_DEVOPS_ORGANIZATION}/"
+fi
+
+vsts configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_DEVOPS_PROJECT}"
+
 vsts login --token "${AZURE_DEVOPS_TOKEN}"
 
 # List RDs with given pipeline name
