@@ -1,18 +1,18 @@
 #!/bin/bash
 set -e
 
-if [ -z "$AZURE_PIPELINE_ORGANIZATION" ]; then
-    echo "AZURE_PIPELINE_ORGANIZATION is not set."
+if [ -z "$AZURE_DEVOPS_ORGANIZATION" ]; then
+    echo "AZURE_DEVOPS_ORGANIZATION is not set."
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_PROJECT" ]; then
-    echo "AZURE_PIPELINE_PROJECT is not set."
+if [ -z "$AZURE_DEVOPS_PROJECT" ]; then
+    echo "AZURE_DEVOPS_PROJECT is not set."
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_TOKEN" ]; then
-    echo "AZURE_PIPELINE_TOKEN is not set."
+if [ -z "$AZURE_DEVOPS_TOKEN" ]; then
+    echo "AZURE_DEVOPS_TOKEN is not set."
     exit 1
 fi
 
@@ -22,10 +22,10 @@ if [ -z "$AZURE_PIPELINE_NAME" ]; then
 fi
 
     
-AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
-vsts configure --defaults instance="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
+AZDEVOPS_URL="https://dev.azure.com/${AZURE_DEVOPS_ORGANIZATION}/"
+vsts configure --defaults instance="${AZDEVOPS_URL}" project="${AZURE_DEVOPS_PROJECT}"
     
-vsts login --token "${AZURE_PIPELINE_TOKEN}"
+vsts login --token "${AZURE_DEVOPS_TOKEN}"
 
 # List RDs with given pipeline name
 PIPELINES=$(vsts release definition list --name "${AZURE_PIPELINE_NAME}")
