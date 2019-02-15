@@ -7,17 +7,17 @@ if [ -z "$AZURE_DEVOPS_URL" ]; then
 fi
 
 if [ -z "$AZURE_DEVOPS_PROJECT" ]; then
-    echo "AZURE_DEVOPS_PROJECT is not set."
+    echo "AZURE_DEVOPS_PROJECT is not set." >&2
     exit 1
 fi
 
 if [ -z "$AZURE_DEVOPS_TOKEN" ]; then
-    echo "AZURE_DEVOPS_TOKEN is not set."
+    echo "AZURE_DEVOPS_TOKEN is not set." >&2
     exit 1
 fi
 
 if [ -z "$AZURE_PIPELINE_NAME" ]; then
-    echo "AZURE_PIPELINE_NAME is not set."
+    echo "AZURE_PIPELINE_NAME is not set." >&2
     exit 1
 fi
 
