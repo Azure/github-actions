@@ -51,7 +51,7 @@ AZURE_DEVOPS_URL="https://dev.azure.com/${AZURE_BOARDS_ORGANIZATION}/"
 
 az devops configure --defaults organization="${AZURE_DEVOPS_URL}" project="${AZURE_BOARDS_PROJECT}"
 
-echo ${AZURE_BOARDS_TOKEN} | az devops login --organization "${AZURE_DEVOPS_URL}"
+echo "${AZURE_BOARDS_TOKEN}" | az devops login --organization "${AZURE_DEVOPS_URL}"
 
 GITHUB_EVENT=$(jq --raw-output 'if .comment != null then "comment" else empty end' "$GITHUB_EVENT_PATH")
 GITHUB_EVENT=${GITHUB_EVENT:-$(jq --raw-output 'if .issue != null then "issue" else empty end' "$GITHUB_EVENT_PATH")}

@@ -30,7 +30,7 @@ fi
 AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
 az devops configure --defaults organization="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
     
-echo ${AZURE_PIPELINE_TOKEN} | az devops login --organization "${AZDEVOPS_URL}"
+echo "${AZURE_PIPELINE_TOKEN}" | az devops login --organization "${AZDEVOPS_URL}"
     
 PIPELINES=$(az pipelines build definition list --name "${AZURE_PIPELINE_NAME}" --output json)
 
