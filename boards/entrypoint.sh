@@ -53,7 +53,7 @@ AZURE_BOARDS_REOPENED_STATE="${AZURE_BOARDS_REOPENED_STATE:-Active}"
 
 az devops configure --defaults organization="${AZURE_DEVOPS_URL}" project="${AZURE_DEVOPS_PROJECT}"
 
-echo "${AZURE_BOARDS_TOKEN}" | az devops login --organization "${AZURE_DEVOPS_URL}"
+echo "${AZURE_DEVOPS_TOKEN}" | az devops login --organization "${AZURE_DEVOPS_URL}"
 
 GITHUB_EVENT=$(jq --raw-output 'if .comment != null then "comment" else empty end' "$GITHUB_EVENT_PATH")
 GITHUB_EVENT=${GITHUB_EVENT:-$(jq --raw-output 'if .issue != null then "issue" else empty end' "$GITHUB_EVENT_PATH")}
