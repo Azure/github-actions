@@ -3,35 +3,29 @@ set -e
 
 az extension add -n azure-devops
 
-if [ -z "$AZURE_PIPELINE_ORGANIZATION" ]; 
-then
-    echo "\$AZURE_PIPELINE_ORGANIZATION is not set."
+if [ -z "$AZURE_DEVOPS_URL" ]; then
+    echo "AZURE_DEVOPS_URL is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_PROJECT" ];
-then
-    echo "\$AZURE_PIPELINE_PROJECT is not set."
+if [ -z "$AZURE_DEVOPS_PROJECT" ]; then
+    echo "AZURE_DEVOPS_PROJECT is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_TOKEN" ]; 
-then
-    echo "\$AZURE_PIPELINE_TOKEN is not set."
+if [ -z "$AZURE_DEVOPS_TOKEN" ]; then
+    echo "AZURE_DEVOPS_TOKEN is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_NAME" ]; 
-then
-    echo "\$AZURE_PIPELINE_NAME is not set."
+if [ -z "$AZURE_PIPELINE_NAME" ]; then
+    echo "AZURE_PIPELINE_NAME is not set." >&2
     exit 1
 fi
 
+az devops configure --defaults organization="${AZURE_DEVOPS_URL}" project="${AZURE_DEVOPS_PROJECT}"
     
-AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
-az devops configure --defaults organization="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
-    
-echo "${AZURE_PIPELINE_TOKEN}" | az devops login --organization "${AZDEVOPS_URL}"
+echo "${AZURE_DEVOPS_TOKEN}" | az devops login --organization "${AZURE_DEVOPS_URL}"
 
 # List RDs with given pipeline name
 PIPELINES=$(az pipelines release definition list --name "${AZURE_PIPELINE_NAME}")
