@@ -27,7 +27,7 @@ fi
 
     
 AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
-az devops configure --defaults instance="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
+az devops configure --defaults organization="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
     
 az devops login --token "${AZURE_PIPELINE_TOKEN}"
 

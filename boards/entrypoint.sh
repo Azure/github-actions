@@ -49,7 +49,7 @@ AZURE_BOARDS_CLOSED_STATE="${AZURE_BOARDS_CLOSED_STATE:-Closed}"
 AZURE_BOARDS_REOPENED_STATE="${AZURE_BOARDS_REOPENED_STATE:-Active}"
 AZURE_DEVOPS_URL="https://dev.azure.com/${AZURE_BOARDS_ORGANIZATION}/"
 
-az devops configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_BOARDS_PROJECT}"
+az devops configure --defaults organization="${AZURE_DEVOPS_URL}" project="${AZURE_BOARDS_PROJECT}"
 
 az devops login --token "${AZURE_BOARDS_TOKEN}"
 
