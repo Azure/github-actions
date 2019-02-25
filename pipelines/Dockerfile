@@ -1,5 +1,4 @@
 FROM microsoft/azure-cli
-RUN az extension add -n azure-devops  
 
 RUN apk update \
   && apk add --no-cache jq

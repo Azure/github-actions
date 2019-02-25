@@ -2,6 +2,8 @@
 
 set -e 
 
+az extension add -n azure-devops
+
 if [ -z "$AZURE_BOARDS_ORGANIZATION" ]; then
     echo "AZURE_BOARDS_ORGANIZATION is not set." >&2
     exit 1
