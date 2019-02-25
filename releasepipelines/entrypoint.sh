@@ -27,12 +27,12 @@ fi
 
     
 AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
-vsts configure --defaults instance="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
+az devops configure --defaults instance="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
     
-vsts login --token "${AZURE_PIPELINE_TOKEN}"
+az devops login --token "${AZURE_PIPELINE_TOKEN}"
 
 # List RDs with given pipeline name
-PIPELINES=$(vsts release definition list --name "${AZURE_PIPELINE_NAME}")
+PIPELINES=$(az pipelines release definition list --name "${AZURE_PIPELINE_NAME}")
 
 if ! (echo "${PIPELINES}" | jq -e .); then
     echo "Failed to fetch release definitions. Error: ${PIPELINES}"
@@ -64,7 +64,7 @@ then
 fi
 
 
-RELEASE_DEFINITION=$(vsts release definition show --name "${AZURE_PIPELINE_NAME}")
+RELEASE_DEFINITION=$(az pipelines release definition show --name "${AZURE_PIPELINE_NAME}")
 
 if ! (echo "${RELEASE_DEFINITION}" | jq -e .); then
     echo "Failed to fetch release pipeline. Error: ${RELEASE_DEFINITION}"
@@ -84,8 +84,8 @@ ALIAS=$(echo "${RELEASE_DEFINITION}" | jq -r ".artifacts[]? | select((.type==\"$
 if [ -n "$ALIAS" ]; 
 then
     echo "Triggering Azure release pipeline for : '${AZURE_PIPELINE_NAME}' for commitId: '${GITHUB_SHA}'."
-    vsts release create --definition-name "${AZURE_PIPELINE_NAME}" --artifact-metadata-list "$ALIAS"="$GITHUB_SHA"
+    az pipelines release create --definition-name "${AZURE_PIPELINE_NAME}" --artifact-metadata-list "$ALIAS"="$GITHUB_SHA"
 else
     echo "Triggering Azure release pipeline: '${AZURE_PIPELINE_NAME}'"
-    vsts release create --definition-name "${AZURE_PIPELINE_NAME}"
+    az pipelines release create --definition-name "${AZURE_PIPELINE_NAME}"
 fi  

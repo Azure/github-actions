@@ -28,11 +28,11 @@ fi
 
     
 AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
-vsts configure --defaults instance="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
+az devops configure --defaults organization="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
     
-vsts login --token "${AZURE_PIPELINE_TOKEN}"
+az devops login --token "${AZURE_PIPELINE_TOKEN}"
     
-PIPELINES=$(vsts build definition list --name "${AZURE_PIPELINE_NAME}" --output json)
+PIPELINES=$(az pipelines build definition list --name "${AZURE_PIPELINE_NAME}" --output json)
 
 if ! (echo "${PIPELINES}" | jq -e .); then
     echo "Failed to fetch pipelines. Error: ${PIPELINES}"
@@ -54,7 +54,7 @@ then
 fi
 
 BUILD_DEFINITION_ID=$(echo "${PIPELINES}" | jq -r ".[0]?.id //empty")
-BUILD_DEFINITION=$(vsts build definition show --id "${BUILD_DEFINITION_ID}" --output json)
+BUILD_DEFINITION=$(az pipelines build definition show --id "${BUILD_DEFINITION_ID}" --output json)
 
 if ! (echo "${BUILD_DEFINITION}" | jq -e .); then
     echo "Failed to  get pipeline using Id: ${BUILD_DEFINITION_ID}. Error: ${BUILD_DEFINITION}"
@@ -66,9 +66,9 @@ REPOSITORY_TYPE=$(echo "${BUILD_DEFINITION}" | jq  -r ".repository?.type?  //emp
 
 if [ -n "$REPOSITORY_NAME" ] && [ -n "$REPOSITORY_TYPE" ] && [ "$REPOSITORY_NAME" = "$GITHUB_REPOSITORY" ] && [ "$REPOSITORY_TYPE" = "GitHub" ]; 
 then
-    BUILD_OUTPUT=$(vsts build queue --definition-name "${AZURE_PIPELINE_NAME}" --branch "${GITHUB_REF}" --commit-id "${GITHUB_SHA}" --output json)
+    BUILD_OUTPUT=$(az pipelines build queue --definition-name "${AZURE_PIPELINE_NAME}" --branch "${GITHUB_REF}" --commit-id "${GITHUB_SHA}" --output json)
 else
-    BUILD_OUTPUT=$(vsts build queue --definition-name "${AZURE_PIPELINE_NAME}" --output json)
+    BUILD_OUTPUT=$(az pipelines build queue --definition-name "${AZURE_PIPELINE_NAME}" --output json)
 fi
 
 if [ -z "$BUILD_OUTPUT" ];
