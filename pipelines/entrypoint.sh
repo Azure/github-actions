@@ -2,35 +2,29 @@
 
 set -e 
 
-if [ -z "$AZURE_PIPELINE_ORGANIZATION" ]; 
-then
-    echo "\$AZURE_PIPELINE_ORGANIZATION is not set." >&2
+if [ -z "$AZURE_DEVOPS_URL" ]; then
+    echo "AZURE_DEVOPS_URL is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_PROJECT" ]; 
-then
-    echo "\$AZURE_PIPELINE_PROJECT is not set." >&2
+if [ -z "$AZURE_DEVOPS_PROJECT" ]; then
+    echo "AZURE_DEVOPS_PROJECT is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_TOKEN" ]; 
-then
-    echo "\$AZURE_PIPELINE_TOKEN is not set." >&2
+if [ -z "$AZURE_DEVOPS_TOKEN" ]; then
+    echo "AZURE_DEVOPS_TOKEN is not set." >&2
     exit 1
 fi
 
-if [ -z "$AZURE_PIPELINE_NAME" ]; 
-then
-    echo "\$AZURE_PIPELINE_NAME is not set." >&2
+if [ -z "$AZURE_PIPELINE_NAME" ]; then
+    echo "AZURE_PIPELINE_NAME is not set." >&2
     exit 1
 fi
 
+vsts configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_DEVOPS_PROJECT}"
     
-AZDEVOPS_URL="https://dev.azure.com/${AZURE_PIPELINE_ORGANIZATION}/"
-vsts configure --defaults instance="${AZDEVOPS_URL}" project="${AZURE_PIPELINE_PROJECT}"
-    
-vsts login --token "${AZURE_PIPELINE_TOKEN}"
+vsts login --token "${AZURE_DEVOPS_TOKEN}"
     
 PIPELINES=$(vsts build definition list --name "${AZURE_PIPELINE_NAME}" --output json)
 
