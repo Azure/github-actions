@@ -2,6 +2,8 @@
 
 set -e 
 
+az extension add -n azure-devops
+
 if [ -z "$AZURE_DEVOPS_URL" ]; then
     echo "AZURE_DEVOPS_URL is not set." >&2
     exit 1
@@ -22,11 +24,11 @@ if [ -z "$AZURE_PIPELINE_NAME" ]; then
     exit 1
 fi
 
-vsts configure --defaults instance="${AZURE_DEVOPS_URL}" project="${AZURE_DEVOPS_PROJECT}"
+az devops configure --defaults organization="${AZURE_DEVOPS_URL}" project="${AZURE_DEVOPS_PROJECT}"
     
-vsts login --token "${AZURE_DEVOPS_TOKEN}"
+echo "${AZURE_DEVOPS_TOKEN}" | az devops login --organization "${AZURE_DEVOPS_URL}"
     
-PIPELINES=$(vsts build definition list --name "${AZURE_PIPELINE_NAME}" --output json)
+PIPELINES=$(az pipelines build definition list --name "${AZURE_PIPELINE_NAME}" --output json)
 
 if ! (echo "${PIPELINES}" | jq -e .); then
     echo "Failed to fetch pipelines. Error: ${PIPELINES}"
@@ -48,7 +50,7 @@ then
 fi
 
 BUILD_DEFINITION_ID=$(echo "${PIPELINES}" | jq -r ".[0]?.id //empty")
-BUILD_DEFINITION=$(vsts build definition show --id "${BUILD_DEFINITION_ID}" --output json)
+BUILD_DEFINITION=$(az pipelines build definition show --id "${BUILD_DEFINITION_ID}" --output json)
 
 if ! (echo "${BUILD_DEFINITION}" | jq -e .); then
     echo "Failed to  get pipeline using Id: ${BUILD_DEFINITION_ID}. Error: ${BUILD_DEFINITION}"
@@ -60,9 +62,9 @@ REPOSITORY_TYPE=$(echo "${BUILD_DEFINITION}" | jq  -r ".repository?.type?  //emp
 
 if [ -n "$REPOSITORY_NAME" ] && [ -n "$REPOSITORY_TYPE" ] && [ "$REPOSITORY_NAME" = "$GITHUB_REPOSITORY" ] && [ "$REPOSITORY_TYPE" = "GitHub" ]; 
 then
-    BUILD_OUTPUT=$(vsts build queue --definition-name "${AZURE_PIPELINE_NAME}" --branch "${GITHUB_REF}" --commit-id "${GITHUB_SHA}" --output json)
+    BUILD_OUTPUT=$(az pipelines build queue --definition-name "${AZURE_PIPELINE_NAME}" --branch "${GITHUB_REF}" --commit-id "${GITHUB_SHA}" --output json)
 else
-    BUILD_OUTPUT=$(vsts build queue --definition-name "${AZURE_PIPELINE_NAME}" --output json)
+    BUILD_OUTPUT=$(az pipelines build queue --definition-name "${AZURE_PIPELINE_NAME}" --output json)
 fi
 
 if [ -z "$BUILD_OUTPUT" ];
