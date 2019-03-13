@@ -2,7 +2,7 @@
 
 The GitHub Action for [Azure CLI](https://github.com/Azure/azure-cli) wraps the Azure CLI to enable managing Azure resources inside of an Action.
 
-To log into a Azure, we recommend using the [Azure Login](../azure-login) Action.
+To log into a Azure, we recommend using the [Azure Login](https://github.com/Azure/github-actions/tree/master/login) Action.
 
 ## Usage
 
