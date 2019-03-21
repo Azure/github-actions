@@ -3,7 +3,7 @@
 set -e
 export AZURE_HTTP_USER_AGENT="GITHUBACTIONS_${GITHUB_ACTION_NAME}_${GITHUB_REPOSITORY}"
 
-LINUX_APP_SUBSTRING="linux"
+# Default folder name to deploy the root directory of the website from (contains index.html etc.)
 DEFAULT_PUBLIC_FOLDER="public"
 
 if [[ -z $AZURE_STORAGE_ACCOUNT ]];
@@ -24,14 +24,12 @@ then
     PUBLIC_FOLDER=${DEFAULT_PUBLIC_FOLDER}
 fi
 
+# Empty blob container before uploading new content
 echo "Emptying ${AZURE_STORAGE_ACCOUNT}/\$web"
-
 az storage blob delete-batch -s "\$web"
-
 echo "Successfully emptied ${AZURE_STORAGE_ACCOUNT}/\$web"
 
+# Upload public folder in batch to blob container
 echo "Uploading \`/${PUBLIC_FOLDER}\` to ${AZURE_STORAGE_ACCOUNT}/\$web"
-
 az storage blob upload-batch --no-progress -d "\$web" -s ${PUBLIC_FOLDER}
-
 echo "Successfully uploaded \`/${PUBLIC_FOLDER}\` to ${AZURE_STORAGE_ACCOUNT}/\$web"
