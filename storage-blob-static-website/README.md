@@ -1,27 +1,27 @@
 # GitHub Action for deploying to a Static Website in Azure Blob Storage
 
-To log into a Azure, we recommend using the [Azure Login](https://github.com/Azure/github-actions/tree/master/login) Action.
-
 ## Usage
 
-```
+```workflow
 action "Upload to Static Website in Azure Blob Storage" {
-  needs = ["Azure Login"]
+  needs = "AzureLogin"
   uses = "Azure/github-actions/static-website@master"
   env = {
     AZURE_STORAGE_ACCOUNT = "<Azure Storage Account>"
     PUBLIC_FOLDER = "<Public folder from which to deploy>"
   }
-  secrets = [SAS_TOKEN]
+  secrets = [
+    "AZURE_STORAGE_ACCOUNT",
+    "SAS_TOKEN"
+  ]
 }
 ```
+
+> See [the examples page](./EXAMPLES.md) for examples.
 
 ## Configuration
 
 ### Environment variables
-
-- `AZURE_STORAGE_ACCOUNT` – **Required** 
-  > Name of your storage account
 
 - `PUBLIC_FOLDER` - *Optional* (defaults to `public`)
   > Local file from which to upload contents
@@ -37,16 +37,21 @@ action "Upload to Static Website in Azure Blob Storage" {
 
 ### Secrets
 
-- `AZURE_STORAGE_SAS_TOKEN` + `AZURE_STORAGE_KEY`
+- `AZURE_STORAGE_ACCOUNT`
+  
+  Name of the storage account in which the static website is to be hosted
 
-> May be used (in combination) instead of the _Azure Login_ action to authenticate. See the [documentation](https://docs.microsoft.com/en-us/cli/azure/storage/blob?view=azure-cli-latest) for more information.
+- `AZURE_STORAGE_SAS_TOKEN`
+  
+  May be used (in combination) instead of the _Azure Login_ action to authenticate. See the [documentation](https://docs.microsoft.com/en-us/cli/azure/storage/blob?view=azure-cli-latest) for more information.
 
-> Easily retrieve your key and generate a SAS token by using the Azure CLI. i.e.:
->
-> ```bash
-> az login # Login to Azure
-> key=`az storage account keys list --account-name $AZURE_STORAGE_ACCOUNT` # Assuming AZURE_STORAGE_ACCOUNT holds the storage account name
-> end=`date -v+30M '+%Y-%m-%dT%H:%MZ'` # Expiration date of the token (this will expire in 30 minutes)
-> sas=`az storage account generate-sas --account-name $AZURE_STORAGE_ACCOUNT --account-key $key --resource-types c --services b --expiry $end --permissions adu`
-> # `$key` will now hold your `AZURE_STORAGE_KEY` and `Ssas` will now hold your `AZURE_STORAGE_SAS_TOKEN`
-> ```
+  > Easily retrieve your key and generate a SAS token by using the Azure CLI. i.e.:
+  >
+  > ```bash
+  > az login # Login to Azure
+  > az storage account keys list --account-name $AZURE_STORAGE_ACCOUNT
+  > # ...Retrieve relevant key from JSON response and store in `$key`
+  > end=`date -v+30M '+%Y-%m-%dT%H:%MZ'` # Expiration date of the token (this will expire in 30 minutes)
+  > sas=`az storage account generate-sas --account-name $AZURE_STORAGE_ACCOUNT --account-key $key --resource-types c --services b --expiry $end --permissions adu`
+  > # `$key` will now hold your `AZURE_STORAGE_KEY` and `$sas` will now hold your `AZURE_STORAGE_SAS_TOKEN`
+  > ```
