@@ -5,7 +5,7 @@
 ```workflow
 action "Upload to Static Website in Azure Blob Storage" {
   needs = "AzureLogin"
-  uses = "Azure/github-actions/static-website@master"
+  uses = "Azure/github-actions/storage-blob-static-website@master"
   env = {
     AZURE_STORAGE_ACCOUNT = "<Azure Storage Account>"
     PUBLIC_FOLDER = "<Public folder from which to deploy>"

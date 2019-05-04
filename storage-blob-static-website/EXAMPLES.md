@@ -34,7 +34,7 @@ action "AzureLogin" {
 
 action "AzureDeployToStaticWebsite" {
   needs = "AzureLogin"
-  uses = "Azure/github-actions/static-website@master"
+  uses = "Azure/github-actions/storage-blob-static-website@master"
   secrets = [
     "AZURE_STORAGE_ACCOUNT",
     "SAS_TOKEN"
