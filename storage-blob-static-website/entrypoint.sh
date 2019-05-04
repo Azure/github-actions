@@ -24,6 +24,7 @@ then
     PUBLIC_FOLDER=${DEFAULT_PUBLIC_FOLDER}
 fi
 
+
 # Empty blob container before uploading new content
 echo "Emptying ${AZURE_STORAGE_ACCOUNT}/\$web"
 az storage blob delete-batch -s "\$web"
