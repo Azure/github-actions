@@ -41,7 +41,7 @@ action "Upload to Static Website in Azure Blob Storage" {
   
   Name of the storage account in which the static website is to be hosted
 
-- `AZURE_STORAGE_SAS_TOKEN`
+- `SAS_TOKEN`
   
   May be used (in combination) instead of the _Azure Login_ action to authenticate. See the [documentation](https://docs.microsoft.com/en-us/cli/azure/storage/blob?view=azure-cli-latest) for more information.
 
