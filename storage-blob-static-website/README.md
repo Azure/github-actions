@@ -26,3 +26,11 @@ action "Upload to Static Website in Azure Blob Storage" {
 ### Secrets
 
 - `SAS_TOKEN`
+
+> Easily generate a SAS token by using the Azure CLI. i.e.:
+>
+> ```bash
+> az login # Login to Azure
+> end=`date -v+30M '+%Y-%m-%dT%H:%MZ'` # Expiration date of the token (this will expire in 30 minutes)
+> az storage account generate-sas --account-name <your_account_name> --resource-types c --services b --expiry $end --permissions adu
+> ```
