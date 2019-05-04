@@ -21,16 +21,32 @@ action "Upload to Static Website in Azure Blob Storage" {
 ### Environment variables
 
 - `AZURE_STORAGE_ACCOUNT` – **Required** 
+  > Name of your storage account
+
 - `PUBLIC_FOLDER` - *Optional* (defaults to `public`)
+  > Local file from which to upload contents
+
+- `INDEX_FILE` - *Optional* (defaults to `index.html`)
+  > The `index.html` file
+
+- `NOT_FOUND_FILE` - *Optional* (defaults to `404.html`)
+  > The file to be used in case of a `404` status code
+
+- `SHOULD_EMPTY` - *Optional* (defaults to false)
+  > Whether the `$web` container should be emptied before uploading new content
 
 ### Secrets
 
-- `SAS_TOKEN`
+- `AZURE_STORAGE_SAS_TOKEN` + `AZURE_STORAGE_KEY`
 
-> Easily generate a SAS token by using the Azure CLI. i.e.:
+> May be used (in combination) instead of the _Azure Login_ action to authenticate. See the [documentation](https://docs.microsoft.com/en-us/cli/azure/storage/blob?view=azure-cli-latest) for more information.
+
+> Easily retrieve your key and generate a SAS token by using the Azure CLI. i.e.:
 >
 > ```bash
 > az login # Login to Azure
+> key=`az storage account keys list --account-name $AZURE_STORAGE_ACCOUNT` # Assuming AZURE_STORAGE_ACCOUNT holds the storage account name
 > end=`date -v+30M '+%Y-%m-%dT%H:%MZ'` # Expiration date of the token (this will expire in 30 minutes)
-> az storage account generate-sas --account-name <your_account_name> --resource-types c --services b --expiry $end --permissions adu
+> sas=`az storage account generate-sas --account-name $AZURE_STORAGE_ACCOUNT --account-key $key --resource-types c --services b --expiry $end --permissions adu`
+> # `$key` will now hold your `AZURE_STORAGE_KEY` and `Ssas` will now hold your `AZURE_STORAGE_SAS_TOKEN`
 > ```
