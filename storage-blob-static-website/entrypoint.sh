@@ -12,9 +12,6 @@ DEFAULT_INDEX_FILE="index.html"
 # Default 404 file
 DEFAULT_NOT_FOUND_FILE="404.html"
 
-# Default value of the variable indicating if the $web directory should be emptied
-SHOULD_SHOULD_EMPTY=false
-
 if [[ -z $PUBLIC_FOLDER ]];
 then 
     echo "No public folder provided in the \`PUBLIC_FOLDER\` environment variable. Defaulting to \`/${DEFAULT_PUBLIC_FOLDER}\`" >&2
@@ -35,7 +32,7 @@ fi
 
 if [[ -z $SHOULD_EMPTY ]];
 then 
-    echo "No value provided in the \`SHOULD_EMPTY\` environment variable. Defaulting to \`${DEFAULT_SHOULD_EMPTY}\`" >&2
+    echo "No value provided in the \`SHOULD_EMPTY\` environment variable. Blob container \`\$web\` will not be emptied before upload" >&2
     INDEX_FILE=${DEFAULT_INDEX_FILE}
 fi
 
@@ -46,7 +43,7 @@ az extension add --name storage-preview
 az storage blob service-properties update --static-website --404-document $NOT_FOUND_FILE --index-document $INDEX_FILE
 
 # If user specified, empty blob container before uploading new content
-if [ $SHOULD_EMPTY = true ];
+if [[ $SHOULD_EMPTY = true ]];
 then 
     echo "Emptying ${AZURE_STORAGE_ACCOUNT}/\$web..."
     az storage blob delete-batch -s "\$web"
