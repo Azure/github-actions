@@ -1,6 +1,6 @@
-FROM microsoft/azure-cli:2.0.47
+FROM microsoft/azure-cli
 
-LABEL version="1.0.0"
+LABEL version="1.0.1"
 LABEL maintainer="Microsoft Corporation"
 LABEL com.github.actions.name="Deploy to Azure Blob Storage for Static Website Hosting"
 LABEL com.github.actions.description="GitHub Action for deploying a static website in Azure Blob Storage"
