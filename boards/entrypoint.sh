@@ -43,7 +43,7 @@ function create_work_item {
 }
 
 function work_items_for_issue {
-    az boards work-item query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}' AND [System.Tags] CONTAINS '${GITHUB_REPO_FULL_NAME}'" | jq '.[].id' | xargs
+    az boards query --wiql "SELECT ID FROM workitems WHERE [System.Tags] CONTAINS 'GitHub' AND [System.Tags] CONTAINS 'Issue ${GITHUB_ISSUE_NUMBER}' AND [System.Tags] CONTAINS '${GITHUB_REPO_FULL_NAME}'" | jq '.[].id' | xargs
 }
 
 AZURE_BOARDS_TYPE="${AZURE_BOARDS_TYPE:-Feature}"
