@@ -1,4 +1,4 @@
-FROM microsoft/azure-cli:2.0.64 
+FROM microsoft/azure-cli:2.0.64
 
 LABEL version="1.0.1"
 LABEL maintainer="Microsoft Corporation"
