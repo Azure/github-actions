@@ -32,8 +32,9 @@ action "Upload to Static Website in Azure Blob Storage" {
 - `NOT_FOUND_FILE` - *Optional* (defaults to `404.html`)
   > The file to be used in case of a `404` status code
 
-- `SHOULD_EMPTY` - *Optional* (defaults to false)
+- `SHOULD_EMPTY` - *Optional*
   > Whether the `$web` container should be emptied before uploading new content
+  > Set to `true` if you wish to empty the `$web` container before uploading.
 
 ### Secrets
 
